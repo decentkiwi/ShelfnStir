@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shelf&Stir | Cocktail Recipes & Home Bar Matcher</title>
+    <meta
+      name="description"
+      content="A polished cocktail recipe guide with classics, niche pours, and a home bar matcher that shows what you can make now or with one quick ingredient run."
+    />
+    <meta property="og:title" content="Shelf&Stir" />
+    <meta property="og:description" content="Find cocktails you can make with the bottles and ingredients already on your shelf." />
+    <meta property="og:image" content="assets/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.png" />
+    <link rel="stylesheet" href="styles.css?v=20260829-mobile-polish" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Shelf and Stir home">
+        <span class="brand-mark">S</span>
+        <span>Shelf&Stir</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="index.html#pantry">What Can I Make?</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="bar-guide.html">Bar Guide</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+          <p class="eyebrow">Shelf-first cocktail recipes</p>
+          <h1 id="hero-title">Start with what you already have</h1>
+          <p class="hero-copy">
+            Shelf&Stir turns your bottles, citrus, mixers, and pantry odds into
+            cocktails you can make now, plus smart one-stop upgrades for what to buy next.
+          </p>
+          <div class="hero-actions">
+            <a class="hero-button" href="#pantry">Build your shelf</a>
+            <a class="hero-link" href="recipes.html">Browse recipes</a>
+          </div>
+          <div class="hero-stats" aria-label="Shelf and Stir highlights">
+            <span><strong>43</strong> recipes</span>
+            <span><strong>1-2</strong> ingredient gap finder</span>
+            <span><strong>Saved</strong> home shelf</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pantry-section" id="pantry" aria-labelledby="pantry-title">
+        <div class="pantry-intro">
+          <div>
+            <p class="eyebrow">Bottle math</p>
+            <h2 id="pantry-title">Tell us what you have. We'll pour the possibilities.</h2>
+            <p>
+              Move through your shelf by category, or use a quick preset. Results are
+              ranked by readiness, effort, and shopping pain so a lime does not count the
+              same as a rare liqueur.
+            </p>
+          </div>
+          <div class="pantry-actions">
+            <button type="button" data-preset="starter">Starter shelf</button>
+            <button type="button" data-preset="tequila">Tequila night</button>
+            <button type="button" data-preset="vodka">Vodka only</button>
+            <button type="button" data-preset="zero">Zero-proof</button>
+            <button type="button" id="clear-pantry">Clear all</button>
+          </div>
+        </div>
+
+        <div class="guided-start" aria-label="Start with a bottle">
+          <p class="match-kicker">Start with one bottle</p>
+          <div>
+            <button type="button" data-start-spirit="gin">Gin</button>
+            <button type="button" data-start-spirit="bourbon">Bourbon</button>
+            <button type="button" data-start-spirit="blanco tequila">Tequila</button>
+            <button type="button" data-start-spirit="white rum">Rum</button>
+            <button type="button" data-start-spirit="vodka">Vodka</button>
+            <button type="button" data-start-spirit="mezcal">Mezcal</button>
+          </div>
+        </div>
+
+        <div class="shelf-steps" role="tablist" aria-label="Ingredient categories">
+          <button class="shelf-step active" type="button" data-step="all">All</button>
+          <button class="shelf-step" type="button" data-step="spirits">Spirits</button>
+          <button class="shelf-step" type="button" data-step="liqueurs">Liqueurs</button>
+          <button class="shelf-step" type="button" data-step="produce">Citrus</button>
+          <button class="shelf-step" type="button" data-step="mixers">Mixers</button>
+          <button class="shelf-step" type="button" data-step="pantry">Pantry</button>
+        </div>
+
+        <div class="pantry-layout">
+          <div id="ingredient-picker" class="ingredient-picker" aria-label="Ingredient selector"></div>
+          <aside class="match-panel" aria-live="polite">
+            <div class="match-summary">
+              <span id="selected-count">0 selected</span>
+              <span id="match-count">0 matches</span>
+            </div>
+            <div class="match-tabs" role="tablist" aria-label="Match type">
+              <button class="match-tab active" type="button" data-match-tab="ready">Ready now</button>
+              <button class="match-tab" type="button" data-match-tab="near">Worth a run</button>
+            </div>
+            <div id="match-results" class="match-results"></div>
+            <div class="shopping-panel">
+              <p class="match-kicker">Best next buys</p>
+              <div id="shopping-insights" class="shopping-insights"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="favorites-strip" aria-labelledby="saved-picks-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Your bar at a glance</p>
+            <h2 id="saved-picks-title">Your go-to pours, recent picks, and fast starts.</h2>
+          </div>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-panel">
+            <h3>Saved favorites</h3>
+            <div id="favorite-preview" class="mini-list" aria-live="polite"></div>
+          </div>
+          <div class="mini-panel">
+            <h3>Recent pours</h3>
+            <div id="recent-recipes" class="mini-list" aria-live="polite"></div>
+          </div>
+          <div class="mini-panel">
+            <h3>Quick starts</h3>
+            <div class="quick-starts">
+              <button type="button" data-quick-recipe="margarita">Margarita</button>
+              <button type="button" data-quick-recipe="old-fashioned">Old Fashioned</button>
+              <button type="button" data-quick-recipe="mojito">Mojito</button>
+              <button type="button" data-quick-recipe="negroni">Negroni</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pathways" aria-labelledby="pathways-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Keep exploring</p>
+            <h2 id="pathways-title">Use the matcher first, then go deeper when you need it.</h2>
+          </div>
+        </div>
+        <div class="pathway-grid">
+          <a class="pathway-card" href="recipes.html">
+            <span>Recipe index</span>
+            <strong>Browse every drink in the Shelf&Stir library.</strong>
+          </a>
+          <a class="pathway-card" href="bar-guide.html">
+            <span>Bar guide</span>
+            <strong>Build a home bar with practical shopping guidance.</strong>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="recipe-dialog" aria-labelledby="dialog-title">
+      <button class="dialog-close" type="button" aria-label="Close recipe">x</button>
+      <div class="dialog-body">
+        <p id="dialog-type" class="eyebrow"></p>
+        <h2 id="dialog-title"></h2>
+        <p id="dialog-summary"></p>
+        <div id="dialog-match-note" class="dialog-match-note"></div>
+        <div class="dialog-tools">
+          <button type="button" id="dialog-favorite">Save favorite</button>
+          <div class="batch-control" aria-label="Batch size">
+            <span>Batch</span>
+            <button type="button" data-batch="1" class="active">1</button>
+            <button type="button" data-batch="2">2</button>
+            <button type="button" data-batch="4">4</button>
+            <button type="button" data-batch="8">8</button>
+          </div>
+        </div>
+        <div class="dialog-columns">
+          <div>
+            <h3>Ingredients</h3>
+            <ul id="dialog-ingredients"></ul>
+            <div id="dialog-substitutions" class="substitution-box"></div>
+          </div>
+          <div>
+            <h3>Method</h3>
+            <ol id="dialog-method"></ol>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Shelf&Stir</strong>
+        <p>Find cocktails from what you already have at home.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="privacy.html">Privacy</a>
+        <a href="responsible-drinking.html">Responsible drinking</a>
+        <a href="bar-guide.html">Bar Guide</a>
+      </nav>
+    </footer>
+
+    <script src="script.js?v=20260829-better-card-tags"></script>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipes | Shelf&Stir</title>
+    <meta
+      name="description"
+      content="Browse the Shelf and Stir cocktail recipe index, including classics, modern staples, tiki drinks, spritzes, niche cocktails, and zero-proof options."
+    />
+    <meta property="og:title" content="Recipes | Shelf&Stir" />
+    <meta property="og:description" content="Browse classic, modern, niche, and zero-proof cocktail recipes." />
+    <meta property="og:image" content="assets/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.png" />
+    <link rel="stylesheet" href="styles.css?v=20260829-mobile-polish" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Shelf and Stir home">
+        <span class="brand-mark">S</span>
+        <span>Shelf&Stir</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="index.html#pantry">What Can I Make?</a>
+        <a href="recipes.html">Recipes</a>
+        <a href="bar-guide.html">Bar Guide</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="page-hero recipe-landing" aria-labelledby="recipes-title">
+        <div>
+          <p class="eyebrow">Recipe index</p>
+          <h1 id="recipes-title">Cocktails worth keeping in rotation</h1>
+          <p>
+            Browse classics, modern staples, tiki icons, aperitivo pours, niche bottles,
+            and zero-proof builds. Use search when you know your ingredient, or filter by
+            the kind of drink you want to make.
+          </p>
+        </div>
+      </section>
+
+      <section class="recipes-section" aria-labelledby="recipe-library-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Library</p>
+            <h2 id="recipe-library-title">Find the right recipe for the bottle in front of you</h2>
+            <p class="section-note">Specs are written for home bartenders and tuned for practical balance.</p>
+          </div>
+          <p id="recipe-count" class="recipe-count" aria-live="polite"></p>
+        </div>
+
+        <form class="search-panel recipe-search" role="search" aria-label="Search cocktail recipes">
+          <label for="recipe-search">Search by drink, spirit, ingredient, or mood</label>
+          <div class="search-row">
+            <input id="recipe-search" type="search" placeholder="Try mezcal, sour, amaro, mint..." />
+            <button type="reset" id="clear-search">Clear</button>
+          </div>
+        </form>
+
+        <div class="filters" aria-label="Recipe filters">
+          <button class="filter active" type="button" data-filter="all">All</button>
+          <button class="filter" type="button" data-filter="classic">Classics</button>
+          <button class="filter" type="button" data-filter="citrus">Citrus</button>
+          <button class="filter" type="button" data-filter="stirred">Stirred</button>
+          <button class="filter" type="button" data-filter="sparkling">Sparkling</button>
+          <button class="filter" type="button" data-filter="tiki">Tiki</button>
+          <button class="filter" type="button" data-filter="niche">Niche</button>
+          <button class="filter" type="button" data-filter="zero-proof">Zero Proof</button>
+          <button class="filter" type="button" data-filter="refreshing">Refreshing</button>
+          <button class="filter" type="button" data-filter="boozy">Boozy</button>
+          <button class="filter" type="button" data-filter="bitter">Bitter</button>
+          <button class="filter" type="button" data-filter="smoky">Smoky</button>
+          <button class="filter" type="button" data-filter="easy">Easy</button>
+          <button class="filter" type="button" data-filter="no-shaker">No shaker</button>
+          <button class="filter" type="button" data-filter="favorites">Favorites</button>
+        </div>
+
+        <div class="collection-grid" aria-label="Recipe collections">
+          <button type="button" data-collection-filter="easy">Three ingredient and easy drinks</button>
+          <button type="button" data-collection-filter="no-shaker">No shaker cocktails</button>
+          <button type="button" data-collection-filter="sparkling">Spritzes and highballs</button>
+          <button type="button" data-collection-filter="zero-proof">Zero-proof drinks</button>
+        </div>
+
+        <div class="recipe-grid" id="recipe-grid"></div>
+      </section>
+    </main>
+
+    <dialog id="recipe-dialog" aria-labelledby="dialog-title">
+      <button class="dialog-close" type="button" aria-label="Close recipe">x</button>
+      <div class="dialog-body">
+        <p id="dialog-type" class="eyebrow"></p>
+        <h2 id="dialog-title"></h2>
+        <p id="dialog-summary"></p>
+        <div id="dialog-match-note" class="dialog-match-note"></div>
+        <div class="dialog-tools">
+          <button type="button" id="dialog-favorite">Save favorite</button>
+          <div class="batch-control" aria-label="Batch size">
+            <span>Batch</span>
+            <button type="button" data-batch="1" class="active">1</button>
+            <button type="button" data-batch="2">2</button>
+            <button type="button" data-batch="4">4</button>
+            <button type="button" data-batch="8">8</button>
+          </div>
+        </div>
+        <div class="dialog-columns">
+          <div>
+            <h3>Ingredients</h3>
+            <ul id="dialog-ingredients"></ul>
+            <div id="dialog-substitutions" class="substitution-box"></div>
+          </div>
+          <div>
+            <h3>Method</h3>
+            <ol id="dialog-method"></ol>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Shelf&Stir</strong>
+        <p>Find cocktails from what you already have at home.</p>
+      </div>
+      <nav aria-label="Footer navigation">
+        <a href="privacy.html">Privacy</a>
+        <a href="responsible-drinking.html">Responsible drinking</a>
+        <a href="bar-guide.html">Bar Guide</a>
+      </nav>
+    </footer>
+
+    <script src="script.js?v=20260829-better-card-tags"></script>
+  </body>
+</html>
