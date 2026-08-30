@@ -371,9 +371,11 @@ h3 {
 
 .pathway-card strong {
   max-width: 520px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.7rem, 3vw, 2.6rem);
-  line-height: 1;
+  font-family: var(--font-sans);
+  font-size: clamp(1.08rem, 1.8vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  font-weight: 800;
 }
 
 .section-heading {
@@ -387,6 +389,8 @@ h3 {
 
 .section-heading h2 {
   max-width: 860px;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  letter-spacing: -0.05em;
 }
 
 .recipe-count {
@@ -706,6 +710,30 @@ h3 {
   color: var(--chalk);
   background: var(--oxblood);
   border-color: var(--oxblood);
+}
+
+.shelf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.shelf-reset {
+  min-height: 38px;
+  padding: 0 12px;
+  color: var(--ink);
+  background: #f7f1e7;
+  border: 1px solid rgba(31, 27, 23, 0.14);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.shelf-reset.secondary {
+  color: var(--chalk);
+  background: var(--teal);
+  border-color: var(--teal);
 }
 
 .pantry-layout {

@@ -122,6 +122,7 @@ const matchTabs = [...document.querySelectorAll(".match-tab")];
 const shelfSteps = [...document.querySelectorAll(".shelf-step")];
 const presetButtons = [...document.querySelectorAll("[data-preset]")];
 const clearPantry = document.querySelector("#clear-pantry");
+const resetShelfButton = document.querySelector("#reset-shelf");
 const shoppingInsights = document.querySelector("#shopping-insights");
 const startSpiritButtons = [...document.querySelectorAll("[data-start-spirit]")];
 const collectionButtons = [...document.querySelectorAll("[data-collection-filter]")];
@@ -789,12 +790,18 @@ if (dialog) {
     if (event.target === dialog) dialog.close();
   });
 }
+const clearSelectedShelf = () => {
+  selectedIngredients.clear();
+  saveShelf();
+  renderPantry();
+};
+
 if (clearPantry) {
-  clearPantry.addEventListener("click", () => {
-    selectedIngredients.clear();
-    saveShelf();
-    renderPantry();
-  });
+  clearPantry.addEventListener("click", clearSelectedShelf);
+}
+
+if (resetShelfButton) {
+  resetShelfButton.addEventListener("click", clearSelectedShelf);
 }
 
 quickRecipeButtons.forEach((button) => {
