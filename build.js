@@ -4,16 +4,41 @@
 
 const fs = require("fs");
 const path = require("path");
+const { Client } = require("pg");
 
-const { recipeBlueprints } = require("./data/recipes-data.js");
+const { loadEnvLocal } = require("./db/env.js");
+const { fetchRecipeBlueprints, fetchIngredientGroups } = require("./db/fetch-recipes.js");
 const { buildRecipes, escapeHtml } = require("./data/recipe-helpers.js");
+
+loadEnvLocal();
 
 const ROOT = __dirname;
 const BASE_URL = "https://decentkiwi.github.io/ShelfnStir/";
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
-const recipes = buildRecipes(recipeBlueprints);
-const recipesById = new Map(recipes.map((recipe) => [recipe.id, recipe]));
+let recipes;
+
+function writeGeneratedRecipesData(recipeBlueprints, ingredientGroups) {
+  const contents = `// GENERATED FILE -- do not edit by hand.
+// Source of truth is Postgres (see db/schema.sql). To change recipe content,
+// update the database (e.g. via db/migrate.js or direct SQL), then re-run
+// \`npm run build\` to regenerate this file.
+(function (root, factory) {
+  const data = factory();
+  if (typeof module === "object" && module.exports) {
+    module.exports = data;
+  } else {
+    root.ShelfStirData = data;
+  }
+})(typeof self !== "undefined" ? self : this, function () {
+  const recipeBlueprints = ${JSON.stringify(recipeBlueprints, null, 2)};
+  const ingredientGroups = ${JSON.stringify(ingredientGroups, null, 2)};
+  return { recipeBlueprints, ingredientGroups };
+});
+`;
+  fs.writeFileSync(path.join(ROOT, "data", "recipes-data.js"), contents);
+  console.log("Regenerated data/recipes-data.js from Postgres");
+}
 
 function timeToIsoDuration(time) {
   const minutes = Number.parseInt(time, 10);
@@ -197,6 +222,7 @@ function recipePageHtml(recipe) {
     </footer>
 
     <script src="../../data/recipes-data.js?v=20260829"></script>
+    <script src="../../data/pantry-config.js?v=20260829"></script>
     <script src="../../data/recipe-helpers.js?v=20260829"></script>
     <script src="../../script.js?v=20260829-better-card-tags"></script>
   </body>
@@ -235,6 +261,33 @@ function writeRobots() {
   console.log("Wrote robots.txt");
 }
 
-writeRecipePages();
-writeSitemap();
-writeRobots();
+async function main() {
+  const connectionString = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("Missing DATABASE_URL(_UNPOOLED) - run `neon link` first or check .env.local");
+  }
+
+  const client = new Client({ connectionString });
+  await client.connect();
+
+  let recipeBlueprints;
+  let ingredientGroups;
+  try {
+    recipeBlueprints = await fetchRecipeBlueprints(client);
+    ingredientGroups = await fetchIngredientGroups(client);
+  } finally {
+    await client.end();
+  }
+
+  writeGeneratedRecipesData(recipeBlueprints, ingredientGroups);
+  recipes = buildRecipes(recipeBlueprints);
+
+  writeRecipePages();
+  writeSitemap();
+  writeRobots();
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

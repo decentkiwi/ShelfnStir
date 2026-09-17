@@ -1,4 +1,5 @@
-const { recipeBlueprints, ingredientGroups, presets, ingredientEquivalents, easyGrabIngredients: easyGrabList, pantryStaples: pantryStaplesList, specialtyIngredients: specialtyList } = window.ShelfStirData;
+const { recipeBlueprints, ingredientGroups } = window.ShelfStirData;
+const { presets, ingredientEquivalents, easyGrabIngredients: easyGrabList, pantryStaples: pantryStaplesList, specialtyIngredients: specialtyList } = window.ShelfStirPantryConfig;
 const { escapeHtml, scaleIngredient, buildRecipes } = window.ShelfStirHelpers;
 
 const recipes = buildRecipes(recipeBlueprints);
