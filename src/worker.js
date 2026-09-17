@@ -1,6 +1,8 @@
 import { handleSignup, handleLogin, handleLogout, handleMe } from "./routes/auth.js";
 import { listFavorites, addFavorite, removeFavorite } from "./routes/favorites.js";
 import { getShelf, putShelf } from "./routes/shelf.js";
+import { getRatings, submitRating } from "./routes/ratings.js";
+import { listComments, postComment } from "./routes/comments.js";
 import { jsonError } from "./respond.js";
 
 const routes = [
@@ -13,6 +15,10 @@ const routes = [
   { method: "DELETE", pattern: /^\/api\/favorites\/(?<recipeId>[a-z0-9-]+)$/, handler: removeFavorite },
   { method: "GET", pattern: /^\/api\/shelf$/, handler: getShelf },
   { method: "PUT", pattern: /^\/api\/shelf$/, handler: putShelf },
+  { method: "GET", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/ratings$/, handler: getRatings },
+  { method: "POST", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/ratings$/, handler: submitRating },
+  { method: "GET", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/comments$/, handler: listComments },
+  { method: "POST", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/comments$/, handler: postComment },
 ];
 
 export default {
