@@ -261,14 +261,18 @@ h3 {
 .search-row button,
 .filter,
 .recipe-card button,
-.dialog-close,
 .pantry-actions button,
 .match-tab,
-.match-card button {
+.match-card button,
+.card-actions a,
+.match-card a,
+.quick-starts a {
   border: 0;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 850;
+  text-decoration: none;
+  text-align: center;
 }
 
 .search-row button {
@@ -474,7 +478,7 @@ h3 {
 }
 
 .mini-item,
-.quick-starts button {
+.quick-starts a {
   display: grid;
   width: 100%;
   padding: 10px 12px;
@@ -483,11 +487,12 @@ h3 {
   border: 1px solid rgba(31, 27, 23, 0.08);
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   text-align: left;
 }
 
 .mini-item strong,
-.quick-starts button {
+.quick-starts a {
   font-size: 0.92rem;
   font-weight: 800;
 }
@@ -567,6 +572,15 @@ h3 {
   line-height: 1;
 }
 
+.recipe-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.recipe-card h3 a:hover {
+  text-decoration: underline;
+}
+
 .recipe-card p,
 .match-card p {
   margin: 0;
@@ -584,9 +598,13 @@ h3 {
 }
 
 .recipe-card button,
-.match-card button {
+.match-card button,
+.card-actions a,
+.match-card a {
+  display: block;
   width: 100%;
   min-height: 38px;
+  line-height: 38px;
   color: var(--chalk);
   background: var(--ink);
 }
@@ -1126,38 +1144,11 @@ h3 {
   text-align: center;
 }
 
-dialog {
-  width: min(940px, calc(100vw - 28px));
-  max-height: calc(100vh - 28px);
-  padding: 0;
-  overflow: auto;
-  background: var(--panel);
-  border: 0;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-}
-
-dialog::backdrop {
-  background: rgba(19, 15, 12, 0.56);
-}
-
-.dialog-close {
-  position: sticky;
-  top: 10px;
-  left: calc(100% - 48px);
-  z-index: 1;
-  width: 38px;
-  height: 38px;
-  margin: 10px 10px -48px auto;
-  color: var(--ink);
-  background: rgba(255, 253, 248, 0.9);
-}
-
 .dialog-body {
   padding: clamp(20px, 4vw, 42px);
 }
 
-.dialog-body h2 {
+.dialog-body h1 {
   font-size: clamp(2.2rem, 5vw, 4.2rem);
 }
 
@@ -1259,6 +1250,33 @@ dialog::backdrop {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
   gap: clamp(18px, 4vw, 42px);
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 18px clamp(18px, 4vw, 58px) 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.breadcrumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  color: var(--ink);
+}
+
+.breadcrumbs [aria-current="page"] {
+  color: var(--ink);
+}
+
+.recipe-detail {
+  padding: 18px clamp(18px, 4vw, 58px) clamp(46px, 8vw, 94px);
 }
 
 li {
@@ -1538,27 +1556,16 @@ li {
     padding: 12px;
   }
 
-  .match-card button {
+  .match-card button,
+  .match-card a {
     width: 100%;
-  }
-
-  dialog {
-    width: calc(100vw - 14px);
-    max-height: calc(100svh - 14px);
   }
 
   .dialog-body {
     padding: 18px 14px 22px;
   }
 
-  .dialog-body h2 {
+  .dialog-body h1 {
     font-size: clamp(2rem, 12vw, 3rem);
-  }
-
-  .dialog-close {
-    top: 8px;
-    width: 36px;
-    height: 36px;
-    margin: 8px 8px -44px auto;
   }
 }
