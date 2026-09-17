@@ -1,0 +1,2 @@
+DATABASE_URL="postgresql://user:password@host/db?sslmode=require"
+JWT_SECRET="generate with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""

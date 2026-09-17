@@ -1,3 +1,15 @@
 .DS_Store
 .vscode/
 __MACOSX/
+.neon
+.env.local
+node_modules/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
+
+# staged deploy output (regenerated from source files, not a source of truth)
+.deploy/

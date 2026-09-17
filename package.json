@@ -1,0 +1,15 @@
+{
+  "name": "shelfnstir",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shelf&Stir cocktail recipe site: static build + Postgres-backed API",
+  "scripts": {
+    "migrate": "node db/migrate.js",
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "jose": "^6.2.12",
+    "pg": "^8.13.1"
+  }
+}
