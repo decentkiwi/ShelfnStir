@@ -4,11 +4,13 @@ import { getShelf, putShelf } from "./routes/shelf.js";
 import { getRatings, submitRating } from "./routes/ratings.js";
 import { listComments, postComment } from "./routes/comments.js";
 import { listRecipes, getRecipe } from "./routes/recipes.js";
+import { listIngredients } from "./routes/ingredients.js";
 import { jsonError } from "./respond.js";
 import { rateLimit } from "./ratelimit.js";
 
 const routes = [
   { method: "GET", pattern: /^\/api\/recipes$/, handler: listRecipes },
+  { method: "GET", pattern: /^\/api\/ingredients$/, handler: listIngredients },
   { method: "GET", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)$/, handler: getRecipe },
   { method: "POST", pattern: /^\/api\/auth\/signup$/, handler: handleSignup, limiter: "AUTH_LIMITER" },
   { method: "POST", pattern: /^\/api\/auth\/login$/, handler: handleLogin, limiter: "AUTH_LIMITER" },
