@@ -34,7 +34,7 @@ export async function handleSignup(request, env) {
   const token = await issueSessionToken(env, user);
   return json(
     { id: user.id, email: user.email, displayName: user.display_name },
-    { headers: { "Set-Cookie": sessionCookieHeader(token) } },
+    { headers: { "Set-Cookie": sessionCookieHeader(request, token) } },
   );
 }
 
@@ -54,12 +54,12 @@ export async function handleLogin(request, env) {
   const token = await issueSessionToken(env, user);
   return json(
     { id: user.id, email: user.email, displayName: user.display_name },
-    { headers: { "Set-Cookie": sessionCookieHeader(token) } },
+    { headers: { "Set-Cookie": sessionCookieHeader(request, token) } },
   );
 }
 
-export async function handleLogout() {
-  return json({ ok: true }, { headers: { "Set-Cookie": clearSessionCookieHeader() } });
+export async function handleLogout(request) {
+  return json({ ok: true }, { headers: { "Set-Cookie": clearSessionCookieHeader(request) } });
 }
 
 export async function handleMe(request, env) {

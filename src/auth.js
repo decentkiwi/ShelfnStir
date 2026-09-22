@@ -58,12 +58,19 @@ export async function issueSessionToken(env, user) {
     .sign(jwtSecretKey(env));
 }
 
-export function sessionCookieHeader(token) {
-  return `${SESSION_COOKIE}=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${SESSION_TTL_SECONDS}`;
+// The Secure attribute requires HTTPS. Browsers quietly treat localhost as
+// HTTPS-equivalent for this, but native clients (iOS's URLSession) don't, so
+// this needs to be conditional to let `wrangler dev` work for app testing.
+function secureAttr(request) {
+  return new URL(request.url).protocol === "https:" ? "Secure; " : "";
 }
 
-export function clearSessionCookieHeader() {
-  return `${SESSION_COOKIE}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`;
+export function sessionCookieHeader(request, token) {
+  return `${SESSION_COOKIE}=${token}; HttpOnly; ${secureAttr(request)}SameSite=Lax; Path=/; Max-Age=${SESSION_TTL_SECONDS}`;
+}
+
+export function clearSessionCookieHeader(request) {
+  return `${SESSION_COOKIE}=; HttpOnly; ${secureAttr(request)}SameSite=Lax; Path=/; Max-Age=0`;
 }
 
 function readCookie(request, name) {
