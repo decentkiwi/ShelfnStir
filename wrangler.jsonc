@@ -10,5 +10,21 @@
   "assets": {
     "directory": ".deploy",
     "binding": "ASSETS"
+  },
+  "unsafe": {
+    "bindings": [
+      {
+        "name": "AUTH_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1001",
+        "simple": { "limit": 10, "period": 60 }
+      },
+      {
+        "name": "WRITE_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1002",
+        "simple": { "limit": 30, "period": 60 }
+      }
+    ]
   }
 }
