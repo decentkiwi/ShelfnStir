@@ -54,4 +54,14 @@ async function fetchIngredientGroups(client) {
   }));
 }
 
-module.exports = { fetchRecipeBlueprints, fetchIngredientGroups };
+// recipe id -> { average, count }, only for recipes that have at least one rating.
+async function fetchRatingSummaries(client) {
+  const { rows } = await client.query(`
+    select recipe_id, round(avg(rating)::numeric, 2) as average, count(*)::int as count
+    from ratings
+    group by recipe_id
+  `);
+  return new Map(rows.map((row) => [row.recipe_id, { average: Number(row.average), count: row.count }]));
+}
+
+module.exports = { fetchRecipeBlueprints, fetchIngredientGroups, fetchRatingSummaries };

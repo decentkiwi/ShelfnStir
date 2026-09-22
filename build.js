@@ -7,7 +7,7 @@ const path = require("path");
 const { Client } = require("pg");
 
 const { loadEnvLocal } = require("./db/env.js");
-const { fetchRecipeBlueprints, fetchIngredientGroups } = require("./db/fetch-recipes.js");
+const { fetchRecipeBlueprints, fetchIngredientGroups, fetchRatingSummaries } = require("./db/fetch-recipes.js");
 const { buildRecipes, escapeHtml } = require("./data/recipe-helpers.js");
 
 loadEnvLocal();
@@ -17,6 +17,7 @@ const BASE_URL = "https://decentkiwi.github.io/ShelfnStir/";
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 let recipes;
+let ratingSummaries = new Map();
 
 function writeGeneratedRecipesData(recipeBlueprints, ingredientGroups) {
   const contents = `// GENERATED FILE -- do not edit by hand.
@@ -94,7 +95,54 @@ function recipeJsonLd(recipe) {
     recipeIngredient: recipe.ingredients,
     recipeInstructions: recipe.method.map((step) => ({ "@type": "HowToStep", text: step })),
   };
-  return JSON.stringify(jsonLd);
+
+  // Only emitted once real ratings exist (Google needs ratingCount >= 1), and
+  // the same numbers are rendered visibly on the page as required.
+  const summary = ratingSummaries.get(recipe.id);
+  if (summary) {
+    jsonLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: summary.average,
+      ratingCount: summary.count,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+
+  // Escape "<" so recipe text can never close the surrounding <script> tag.
+  return JSON.stringify(jsonLd).replace(/</g, "\\u003c");
+}
+
+function ratingSummaryText({ average, count }) {
+  return `${average.toFixed(1)} out of 5 from ${count} rating${count === 1 ? "" : "s"}`;
+}
+
+function communityHtml(recipe) {
+  const summary = ratingSummaries.get(recipe.id);
+  const stars = [1, 2, 3, 4, 5]
+    .map((n) => `<button type="button" class="star" data-rating="${n}" aria-label="Rate ${n} out of 5" aria-pressed="false">&#9733;</button>`)
+    .join("\n              ");
+
+  // Ratings/comments are interactive only where the API exists; the section
+  // stays hidden until script.js confirms that, unless there's a saved rating
+  // summary worth showing to everyone (including crawlers).
+  return `<section class="community" id="community"${summary ? "" : " hidden"} aria-label="Ratings and comments">
+        <div class="community-inner">
+          <p class="rating-summary" id="rating-summary">${summary ? escapeHtml(ratingSummaryText(summary)) : ""}</p>
+          <div class="rating-input" id="rating-input" hidden>
+            <h3>Rate this drink</h3>
+            <div class="rating-stars" role="group" aria-label="Rate this drink from 1 to 5 stars">
+              ${stars}
+            </div>
+            <p class="rating-status" id="rating-status" aria-live="polite"></p>
+          </div>
+          <div class="comments" id="comments" hidden>
+            <h3>Comments</h3>
+            <div id="comment-form-slot"></div>
+            <ul class="comment-list" id="comment-list"></ul>
+          </div>
+        </div>
+      </section>`;
 }
 
 function recipePageHtml(recipe) {
@@ -192,6 +240,8 @@ function recipePageHtml(recipe) {
         </div>
       </article>
 
+      ${communityHtml(recipe)}
+
       ${
         related.length
           ? `<section class="pathways" aria-labelledby="related-title">
@@ -267,7 +317,7 @@ async function main() {
     throw new Error("Missing DATABASE_URL(_UNPOOLED) - run `neon link` first or check .env.local");
   }
 
-  const client = new Client({ connectionString });
+  const client = new Client({ connectionString, connectionTimeoutMillis: 15000 });
   await client.connect();
 
   let recipeBlueprints;
@@ -275,6 +325,7 @@ async function main() {
   try {
     recipeBlueprints = await fetchRecipeBlueprints(client);
     ingredientGroups = await fetchIngredientGroups(client);
+    ratingSummaries = await fetchRatingSummaries(client);
   } finally {
     await client.end();
   }
