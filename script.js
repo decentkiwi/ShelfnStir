@@ -1,3 +1,4 @@
+const scriptUrl = document.currentScript ? document.currentScript.src : location.href;
 const { recipeBlueprints, ingredientGroups } = window.ShelfStirData;
 const { presets, ingredientEquivalents, easyGrabIngredients: easyGrabList, pantryStaples: pantryStaplesList, specialtyIngredients: specialtyList } = window.ShelfStirPantryConfig;
 const { escapeHtml, scaleIngredient, buildRecipes } = window.ShelfStirHelpers;
@@ -40,6 +41,15 @@ const selectedIngredients = new Set();
 const favoriteRecipes = new Set();
 const recentRecipes = [];
 
+const apiBase = new URL("api/", scriptUrl).href;
+const myRatingsKey = "shelf-and-stir-my-ratings";
+const voterKey = "shelf-and-stir-voter";
+let currentUser = null;
+let authDialog = null;
+let authMode = "login";
+let shelfSyncTimer = null;
+let fallbackVoterToken = "";
+
 function recipePath(id) {
   return `recipes/${id}/`;
 }
@@ -54,12 +64,17 @@ function loadSavedShelf() {
   }
 }
 
-function saveShelf() {
+function writeShelfLocal() {
   try {
     localStorage.setItem(storageKey, JSON.stringify([...selectedIngredients]));
   } catch {
     // The matcher still works when browser storage is unavailable.
   }
+}
+
+function saveShelf() {
+  writeShelfLocal();
+  scheduleShelfSync();
 }
 
 function loadFavorites() {
@@ -145,6 +160,7 @@ function toggleFavorite(id) {
     favoriteRecipes.add(id);
   }
   saveFavorites();
+  syncFavorite(id, favoriteRecipes.has(id));
   renderRecipes();
   renderSmartLists();
   updateDialogFavorite();
@@ -560,6 +576,393 @@ if (resetShelfButton) {
   resetShelfButton.addEventListener("click", clearSelectedShelf);
 }
 
+// ---------------------------------------------------------------------------
+// Optional accounts, ratings, and comments.
+// These depend on the Worker API (/api/*), which only exists on the Cloudflare
+// deployment. On hosts without it (e.g. GitHub Pages) initAccount() detects
+// that and the site stays in its guest-only, localStorage-backed mode.
+// ---------------------------------------------------------------------------
+
+async function api(path, options = {}) {
+  const headers = options.body ? { "Content-Type": "application/json" } : {};
+  const response = await fetch(apiBase + path, { ...options, headers });
+  // A host without the Worker answers /api/* with an HTML 404, not JSON.
+  if (!(response.headers.get("content-type") || "").includes("application/json")) {
+    throw new Error("API unavailable");
+  }
+  return { ok: response.ok, status: response.status, data: await response.json() };
+}
+
+const selectableIngredients = new Set(ingredientGroups.flatMap((group) => group.items));
+
+function refreshAfterAccountChange() {
+  renderRecipes();
+  renderSmartLists();
+  renderPantry();
+  updateDialogFavorite();
+}
+
+function syncFavorite(id, saved) {
+  if (!currentUser) return;
+  api(`favorites/${encodeURIComponent(id)}`, { method: saved ? "PUT" : "DELETE" }).catch(() => {});
+}
+
+function scheduleShelfSync() {
+  if (!currentUser) return;
+  clearTimeout(shelfSyncTimer);
+  shelfSyncTimer = setTimeout(() => {
+    api("shelf", { method: "PUT", body: JSON.stringify({ ingredientIds: [...selectedIngredients] }) }).catch(() => {});
+  }, 600);
+}
+
+// Returning session: the server is the source of truth.
+async function pullServerState() {
+  const [favorites, shelf] = await Promise.all([api("favorites"), api("shelf")]);
+  if (favorites.ok) {
+    favoriteRecipes.clear();
+    favorites.data.recipeIds.forEach((id) => favoriteRecipes.add(id));
+    saveFavorites();
+  }
+  if (shelf.ok) {
+    selectedIngredients.clear();
+    shelf.data.ingredientIds.forEach((id) => selectedIngredients.add(id));
+    writeShelfLocal();
+  }
+  refreshAfterAccountChange();
+}
+
+// Moment of sign-in/sign-up: fold whatever the visitor built as a guest into
+// their account (union), so nothing they saved before signing in is lost.
+async function mergeLocalIntoServer() {
+  const [favorites, shelf] = await Promise.all([api("favorites"), api("shelf")]);
+
+  if (favorites.ok) {
+    const onServer = new Set(favorites.data.recipeIds);
+    const missing = [...favoriteRecipes].filter((id) => !onServer.has(id));
+    await Promise.all(missing.map((id) => api(`favorites/${encodeURIComponent(id)}`, { method: "PUT" }).catch(() => {})));
+    onServer.forEach((id) => favoriteRecipes.add(id));
+    saveFavorites();
+  }
+
+  if (shelf.ok) {
+    const merged = new Set([...shelf.data.ingredientIds, ...selectedIngredients].filter((id) => selectableIngredients.has(id)));
+    const changed = merged.size !== shelf.data.ingredientIds.length;
+    selectedIngredients.clear();
+    merged.forEach((id) => selectedIngredients.add(id));
+    writeShelfLocal();
+    if (changed) {
+      await api("shelf", { method: "PUT", body: JSON.stringify({ ingredientIds: [...merged] }) }).catch(() => {});
+    }
+  }
+}
+
+function renderAccountControls() {
+  const nav = document.querySelector(".site-header nav");
+  if (!nav) return;
+  let control = nav.querySelector(".account-control");
+  if (!control) {
+    control = document.createElement("span");
+    control.className = "account-control";
+    nav.append(control);
+  }
+  control.innerHTML = currentUser
+    ? `<span class="account-name">${escapeHtml(currentUser.displayName)}</span><button type="button" data-account-action="logout">Sign out</button>`
+    : `<button type="button" data-account-action="login">Sign in</button>`;
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const signup = mode === "signup";
+  authDialog.querySelector("#auth-title").textContent = signup ? "Create an account" : "Sign in";
+  authDialog.querySelector(".auth-submit").textContent = signup ? "Create account" : "Sign in";
+  authDialog.querySelector(".auth-switch").textContent = signup ? "I already have an account" : "Create an account";
+  authDialog.querySelector(".auth-name-field").hidden = !signup;
+  authDialog.querySelector('input[name="password"]').autocomplete = signup ? "new-password" : "current-password";
+  authDialog.querySelector(".auth-error").textContent = "";
+}
+
+function ensureAuthDialog() {
+  if (authDialog) return authDialog;
+  authDialog = document.createElement("dialog");
+  authDialog.className = "auth-dialog";
+  authDialog.setAttribute("aria-labelledby", "auth-title");
+  authDialog.innerHTML = `
+    <form class="auth-form" novalidate>
+      <button type="button" class="auth-close" aria-label="Close">x</button>
+      <h2 id="auth-title">Sign in</h2>
+      <p class="auth-note">Accounts are optional. Sign in to sync your favorites and shelf across devices and to leave comments.</p>
+      <label class="auth-name-field" hidden>Display name
+        <input name="displayName" maxlength="40" autocomplete="nickname">
+      </label>
+      <label>Email
+        <input name="email" type="email" autocomplete="email" autofocus>
+      </label>
+      <label>Password
+        <input name="password" type="password" minlength="8" autocomplete="current-password">
+      </label>
+      <p class="auth-error" role="alert"></p>
+      <button type="submit" class="auth-submit">Sign in</button>
+      <button type="button" class="auth-switch">Create an account</button>
+    </form>
+  `;
+  document.body.append(authDialog);
+
+  authDialog.addEventListener("click", (event) => {
+    if (event.target === authDialog) authDialog.close();
+  });
+  authDialog.querySelector(".auth-close").addEventListener("click", () => authDialog.close());
+  authDialog.querySelector(".auth-switch").addEventListener("click", () => setAuthMode(authMode === "login" ? "signup" : "login"));
+  authDialog.querySelector(".auth-form").addEventListener("submit", submitAuth);
+  return authDialog;
+}
+
+function openAuthDialog(mode) {
+  ensureAuthDialog();
+  setAuthMode(mode);
+  authDialog.showModal();
+}
+
+async function submitAuth(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const fields = new FormData(form);
+  const errorEl = form.querySelector(".auth-error");
+  const submit = form.querySelector(".auth-submit");
+  const signup = authMode === "signup";
+
+  const payload = { email: fields.get("email"), password: fields.get("password") };
+  if (signup) payload.displayName = fields.get("displayName");
+
+  errorEl.textContent = "";
+  submit.disabled = true;
+  try {
+    const result = await api(signup ? "auth/signup" : "auth/login", { method: "POST", body: JSON.stringify(payload) });
+    if (!result.ok) {
+      errorEl.textContent = result.data.error || "Something went wrong. Please try again.";
+      return;
+    }
+    currentUser = result.data;
+    form.reset();
+    authDialog.close();
+    renderAccountControls();
+    await mergeLocalIntoServer().catch(() => {});
+    refreshAfterAccountChange();
+    renderCommentForm();
+  } catch {
+    errorEl.textContent = "Could not reach the server. Please try again.";
+  } finally {
+    submit.disabled = false;
+  }
+}
+
+async function signOut() {
+  try {
+    await api("auth/logout", { method: "POST" });
+  } catch {
+    return;
+  }
+  currentUser = null;
+  // The next person on a shared browser shouldn't inherit this account's data.
+  favoriteRecipes.clear();
+  selectedIngredients.clear();
+  saveFavorites();
+  writeShelfLocal();
+  renderAccountControls();
+  refreshAfterAccountChange();
+  renderCommentForm();
+}
+
+document.addEventListener("click", (event) => {
+  const action = event.target.closest("[data-account-action]");
+  if (!action) return;
+  if (action.dataset.accountAction === "login") openAuthDialog("login");
+  if (action.dataset.accountAction === "logout") signOut();
+});
+
+function randomToken() {
+  return [...crypto.getRandomValues(new Uint8Array(16))].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function getVoterToken() {
+  try {
+    const existing = localStorage.getItem(voterKey);
+    if (existing) return existing;
+    const created = randomToken();
+    localStorage.setItem(voterKey, created);
+    return created;
+  } catch {
+    fallbackVoterToken = fallbackVoterToken || randomToken();
+    return fallbackVoterToken;
+  }
+}
+
+function loadMyRatings() {
+  try {
+    return JSON.parse(localStorage.getItem(myRatingsKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveMyRating(recipeId, rating) {
+  try {
+    localStorage.setItem(myRatingsKey, JSON.stringify({ ...loadMyRatings(), [recipeId]: rating }));
+  } catch {
+    // Remembering your own rating is a convenience, not a requirement.
+  }
+}
+
+function ratingSummaryText({ average, count }) {
+  if (!count) return "No ratings yet. Be the first to rate this drink.";
+  return `${average.toFixed(1)} out of 5 from ${count} rating${count === 1 ? "" : "s"}`;
+}
+
+function renderMyRating() {
+  const mine = loadMyRatings()[currentRecipeId] || 0;
+  document.querySelectorAll("[data-rating]").forEach((star) => {
+    const value = Number(star.dataset.rating);
+    star.classList.toggle("active", value <= mine);
+    star.setAttribute("aria-pressed", String(value === mine));
+  });
+}
+
+async function refreshRatingSummary() {
+  const summary = document.querySelector("#rating-summary");
+  try {
+    const result = await api(`recipes/${encodeURIComponent(currentRecipeId)}/ratings`);
+    if (result.ok && summary) summary.textContent = ratingSummaryText(result.data);
+  } catch {
+    // Keep whatever summary is already on the page.
+  }
+}
+
+async function submitRating(value) {
+  const status = document.querySelector("#rating-status");
+  try {
+    const result = await api(`recipes/${encodeURIComponent(currentRecipeId)}/ratings`, {
+      method: "POST",
+      body: JSON.stringify({ rating: value, voterToken: getVoterToken() }),
+    });
+    if (!result.ok) {
+      status.textContent = result.data.error || "Could not save your rating.";
+      return;
+    }
+    saveMyRating(currentRecipeId, value);
+    renderMyRating();
+    status.textContent = "Thanks for rating!";
+    await refreshRatingSummary();
+  } catch {
+    status.textContent = "Could not reach the server. Please try again.";
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const star = event.target.closest("[data-rating]");
+  if (star && currentRecipeId) submitRating(Number(star.dataset.rating));
+});
+
+function commentHtml(comment) {
+  const date = new Date(comment.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return `
+    <li class="comment">
+      <div class="comment-meta">
+        <strong>${escapeHtml(comment.displayName)}</strong>
+        <time datetime="${escapeHtml(comment.createdAt)}">${escapeHtml(date)}</time>
+      </div>
+      <p>${escapeHtml(comment.body)}</p>
+    </li>
+  `;
+}
+
+function renderCommentForm() {
+  const slot = document.querySelector("#comment-form-slot");
+  if (!slot) return;
+  if (!currentUser) {
+    slot.innerHTML = `<p class="comment-signin"><button type="button" data-account-action="login">Sign in</button> to leave a comment.</p>`;
+    return;
+  }
+  slot.innerHTML = `
+    <form class="comment-form">
+      <label for="comment-body">Comment as ${escapeHtml(currentUser.displayName)}</label>
+      <textarea id="comment-body" name="body" rows="3" maxlength="2000"></textarea>
+      <p class="comment-error" role="alert"></p>
+      <button type="submit">Post comment</button>
+    </form>
+  `;
+}
+
+async function refreshComments() {
+  const list = document.querySelector("#comment-list");
+  if (!list) return;
+  try {
+    const result = await api(`recipes/${encodeURIComponent(currentRecipeId)}/comments`);
+    if (!result.ok) return;
+    list.innerHTML = result.data.comments.length
+      ? result.data.comments.map(commentHtml).join("")
+      : `<li class="comment-empty">No comments yet.</li>`;
+  } catch {
+    // Leave the list as it is.
+  }
+}
+
+document.addEventListener("submit", async (event) => {
+  const form = event.target;
+  if (!form.matches || !form.matches(".comment-form")) return;
+  event.preventDefault();
+  const errorEl = form.querySelector(".comment-error");
+  const textarea = form.querySelector("textarea");
+  const submit = form.querySelector('button[type="submit"]');
+
+  errorEl.textContent = "";
+  submit.disabled = true;
+  try {
+    const result = await api(`recipes/${encodeURIComponent(currentRecipeId)}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: textarea.value }),
+    });
+    if (result.status === 401) {
+      currentUser = null;
+      renderAccountControls();
+      renderCommentForm();
+      return;
+    }
+    if (!result.ok) {
+      errorEl.textContent = result.data.error || "Could not post your comment.";
+      return;
+    }
+    textarea.value = "";
+    await refreshComments();
+  } catch {
+    errorEl.textContent = "Could not reach the server. Please try again.";
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+function initCommunity() {
+  const community = document.querySelector("#community");
+  if (!community || !currentRecipeId) return;
+  community.hidden = false;
+  document.querySelector("#rating-input").hidden = false;
+  document.querySelector("#comments").hidden = false;
+  renderMyRating();
+  refreshRatingSummary();
+  renderCommentForm();
+  refreshComments();
+}
+
+async function initAccount() {
+  try {
+    const me = await api("me");
+    currentUser = me.ok ? me.data : null;
+  } catch {
+    return;
+  }
+  renderAccountControls();
+  if (currentUser) await pullServerState().catch(() => {});
+  initCommunity();
+}
+
 loadSavedShelf();
 loadFavorites();
 loadRecentRecipes();
@@ -567,3 +970,4 @@ renderRecipes();
 renderSmartLists();
 renderPantry();
 initRecipeDetailPage();
+initAccount();

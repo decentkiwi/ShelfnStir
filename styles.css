@@ -1279,6 +1279,258 @@ h3 {
   padding: 18px clamp(18px, 4vw, 58px) clamp(46px, 8vw, 94px);
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.account-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.account-name {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.account-control button {
+  min-height: 34px;
+  padding: 0 14px;
+  color: var(--chalk);
+  background: var(--ink);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.auth-dialog {
+  width: min(420px, calc(100vw - 28px));
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.auth-dialog::backdrop {
+  background: rgba(19, 15, 12, 0.56);
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.auth-form h2 {
+  margin: 0;
+  font-size: 1.9rem;
+}
+
+.auth-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.auth-form label,
+.comment-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.auth-form input,
+.comment-form textarea {
+  padding: 0 12px;
+  color: var(--ink);
+  background: var(--chalk);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.auth-form input {
+  min-height: 44px;
+}
+
+.auth-form input:focus,
+.comment-form textarea:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.auth-error,
+.comment-error {
+  min-height: 1.2em;
+  margin: 0;
+  color: var(--oxblood);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.auth-submit,
+.comment-form button {
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--chalk);
+  background: var(--ink);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.auth-submit:disabled,
+.comment-form button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.auth-switch,
+.comment-signin button {
+  padding: 0;
+  color: var(--teal);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.auth-close {
+  justify-self: end;
+  width: 34px;
+  height: 34px;
+  color: var(--ink);
+  background: #efe6d8;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.community {
+  padding: 0 clamp(18px, 4vw, 58px) clamp(46px, 8vw, 94px);
+}
+
+.community-inner {
+  display: grid;
+  gap: 32px;
+  padding: 0 clamp(20px, 4vw, 42px);
+}
+
+.community h3 {
+  margin: 0 0 10px;
+}
+
+.rating-summary {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rating-summary:empty {
+  display: none;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  padding: 0 2px;
+  color: #cdbfae;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+.star.active {
+  color: var(--gold);
+}
+
+.rating-status {
+  min-height: 1.2em;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.comment-form {
+  display: grid;
+  gap: 10px;
+  max-width: 640px;
+}
+
+.comment-form textarea {
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.comment-form button {
+  justify-self: start;
+  min-height: 40px;
+}
+
+.comment-signin {
+  margin: 0;
+  color: var(--muted);
+}
+
+.comment-list {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comment {
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.comment-meta {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.comment-meta strong {
+  color: var(--ink);
+}
+
+.comment p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.comment-empty {
+  color: var(--muted);
+}
+
 li {
   margin-bottom: 8px;
   line-height: 1.45;
