@@ -13,7 +13,7 @@ export async function listComments(request, env, ctx, params) {
   `;
   return json({
     comments: rows.map((r) => ({
-      id: r.id,
+      id: Number(r.id),
       body: r.body,
       createdAt: r.created_at,
       displayName: r.display_name,
@@ -42,7 +42,7 @@ export async function postComment(request, env, ctx, params) {
   `;
 
   return json({
-    id: comment.id,
+    id: Number(comment.id),
     body: comment.body,
     createdAt: comment.created_at,
     displayName: user.displayName,
