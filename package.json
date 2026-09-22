@@ -5,7 +5,8 @@
   "description": "Shelf&Stir cocktail recipe site: static build + Postgres-backed API",
   "scripts": {
     "migrate": "node db/migrate.js",
-    "build": "node build.js"
+    "build": "node build.js",
+    "stage": "node scripts/stage.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
