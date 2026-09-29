@@ -1303,6 +1303,19 @@ h3 {
   white-space: nowrap;
 }
 
+.account-delete-link {
+  min-height: auto;
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .account-control button {
   min-height: 34px;
   padding: 0 14px;
@@ -1411,6 +1424,43 @@ h3 {
   border: 0;
   cursor: pointer;
   font-weight: 800;
+  text-decoration: underline;
+}
+
+.delete-confirm-row {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(141, 38, 56, 0.08);
+  border: 1px solid rgba(141, 38, 56, 0.22);
+  border-radius: 8px;
+}
+
+.delete-confirm-row p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.delete-confirm-yes {
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--chalk);
+  background: var(--oxblood);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.delete-confirm-cancel {
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
   text-decoration: underline;
 }
 

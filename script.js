@@ -47,6 +47,7 @@ const voterKey = "shelf-and-stir-voter";
 let currentUser = null;
 let authDialog = null;
 let authMode = "login";
+let deleteAccountDialog = null;
 let shelfSyncTimer = null;
 let fallbackVoterToken = "";
 
@@ -666,7 +667,7 @@ function renderAccountControls() {
     nav.append(control);
   }
   control.innerHTML = currentUser
-    ? `<span class="account-name">${escapeHtml(currentUser.displayName)}</span><button type="button" data-account-action="logout">Sign out</button>`
+    ? `<span class="account-name">${escapeHtml(currentUser.displayName)}</span><button type="button" data-account-action="logout">Sign out</button><button type="button" class="account-delete-link" data-account-action="delete">Delete account</button>`
     : `<button type="button" data-account-action="login">Sign in</button>`;
 }
 
@@ -772,11 +773,88 @@ async function signOut() {
   renderCommentForm();
 }
 
+function ensureDeleteAccountDialog() {
+  if (deleteAccountDialog) return deleteAccountDialog;
+  deleteAccountDialog = document.createElement("dialog");
+  deleteAccountDialog.className = "auth-dialog";
+  deleteAccountDialog.setAttribute("aria-labelledby", "delete-account-title");
+  deleteAccountDialog.innerHTML = `
+    <form class="auth-form" novalidate>
+      <button type="button" class="auth-close" aria-label="Close">x</button>
+      <h2 id="delete-account-title">Delete account</h2>
+      <p class="auth-note">This permanently deletes your account, favorites, pantry shelf, and comments. This can't be undone.</p>
+      <label>Confirm your password
+        <input name="password" type="password" autocomplete="current-password">
+      </label>
+      <p class="auth-error" role="alert"></p>
+      <button type="submit" class="auth-submit delete-account-submit">Delete my account</button>
+      <div class="delete-confirm-row" hidden>
+        <p>Permanently delete your account? This can't be undone.</p>
+        <button type="button" class="delete-confirm-yes">Yes, delete permanently</button>
+        <button type="button" class="delete-confirm-cancel">Cancel</button>
+      </div>
+    </form>
+  `;
+  document.body.append(deleteAccountDialog);
+  deleteAccountDialog.addEventListener("click", (event) => {
+    if (event.target === deleteAccountDialog) deleteAccountDialog.close();
+  });
+  deleteAccountDialog.querySelector(".auth-close").addEventListener("click", () => deleteAccountDialog.close());
+  deleteAccountDialog.querySelector(".auth-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!new FormData(form).get("password")) return;
+    form.querySelector(".delete-account-submit").hidden = true;
+    form.querySelector(".delete-confirm-row").hidden = false;
+  });
+  deleteAccountDialog.querySelector(".delete-confirm-cancel").addEventListener("click", () => {
+    deleteAccountDialog.querySelector(".delete-account-submit").hidden = false;
+    deleteAccountDialog.querySelector(".delete-confirm-row").hidden = true;
+  });
+  deleteAccountDialog.querySelector(".delete-confirm-yes").addEventListener("click", submitDeleteAccount);
+  return deleteAccountDialog;
+}
+
+async function submitDeleteAccount(event) {
+  const form = event.currentTarget.closest("form");
+  const password = new FormData(form).get("password");
+  const errorEl = form.querySelector(".auth-error");
+  const submit = event.currentTarget;
+
+  errorEl.textContent = "";
+  submit.disabled = true;
+  try {
+    const result = await api("me", { method: "DELETE", body: JSON.stringify({ password }) });
+    if (!result.ok) {
+      errorEl.textContent = result.data.error || "Something went wrong. Please try again.";
+      return;
+    }
+    form.reset();
+    deleteAccountDialog.close();
+    currentUser = null;
+    favoriteRecipes.clear();
+    selectedIngredients.clear();
+    saveFavorites();
+    writeShelfLocal();
+    renderAccountControls();
+    refreshAfterAccountChange();
+    renderCommentForm();
+  } catch {
+    errorEl.textContent = "Could not reach the server. Please try again.";
+  } finally {
+    submit.disabled = false;
+  }
+}
+
 document.addEventListener("click", (event) => {
   const action = event.target.closest("[data-account-action]");
   if (!action) return;
   if (action.dataset.accountAction === "login") openAuthDialog("login");
   if (action.dataset.accountAction === "logout") signOut();
+  if (action.dataset.accountAction === "delete") {
+    ensureDeleteAccountDialog();
+    deleteAccountDialog.showModal();
+  }
 });
 
 function randomToken() {
