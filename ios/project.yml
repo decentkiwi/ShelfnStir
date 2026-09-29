@@ -15,6 +15,11 @@ targets:
         UILaunchScreen: {}
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
+        # The app only uses HTTPS via standard iOS networking APIs (no custom
+        # crypto in the app binary itself), which is exempt from export
+        # compliance documentation. Declaring it upfront skips App Store
+        # Connect's encryption question on every single build upload.
+        ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.decentkiwi.ShelfnStir
