@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import { db } from "./db.js";
 
 const PBKDF2_ITERATIONS = 100000;
 const SESSION_COOKIE = "shelfnstir_session";
@@ -80,13 +81,22 @@ function readCookie(request, name) {
   return match ? match[1] : null;
 }
 
+// Verifies the JWT AND that the account still exists. JWTs are stateless, so
+// signature+expiry alone would keep authenticating a deleted account for the
+// rest of the token's 30-day life -- this extra lookup is what makes account
+// deletion actually take effect immediately, not just clear one cookie.
 export async function getSessionUser(request, env) {
   const token = readCookie(request, SESSION_COOKIE);
   if (!token) return null;
+  let userId;
   try {
     const { payload } = await jwtVerify(token, jwtSecretKey(env));
-    return { id: Number(payload.sub), email: payload.email, displayName: payload.displayName };
+    userId = Number(payload.sub);
   } catch {
     return null;
   }
+  const sql = db(env);
+  const [user] = await sql`select id, email, display_name from users where id = ${userId}`;
+  if (!user) return null;
+  return { id: Number(user.id), email: user.email, displayName: user.display_name };
 }

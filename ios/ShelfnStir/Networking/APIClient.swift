@@ -21,9 +21,15 @@ enum APIError: Error, LocalizedError {
 final class APIClient {
   static let shared = APIClient()
 
-  // Points at `wrangler dev` for now. Change this once the API has a real
-  // deployed URL.
+  // Debug builds (Simulator, run from Xcode) talk to `wrangler dev` on the
+  // same Mac; Release builds (TestFlight, App Store) talk to the deployed
+  // Worker. Update the Release URL once a custom domain replaces the
+  // workers.dev one.
+  #if DEBUG
   var baseURL = URL(string: "http://localhost:8787/api/")!
+  #else
+  var baseURL = URL(string: "https://shelfnstir.lcocktails.workers.dev/api/")!
+  #endif
 
   private let session = URLSession.shared
   private let decoder: JSONDecoder = {
@@ -91,6 +97,12 @@ final class APIClient {
     _ = try await request("auth/logout", method: "POST")
   }
 
+  // Required by App Store Review Guideline 5.1.1(v): apps that support
+  // account creation must let people delete their account in-app.
+  func deleteAccount(password: String) async throws {
+    _ = try await request("me", method: "DELETE", body: DeleteAccountBody(password: password))
+  }
+
   // MARK: Favorites & shelf
 
   func fetchFavorites() async throws -> [String] {
@@ -120,6 +132,7 @@ final class APIClient {
 
 private struct SignupBody: Encodable { let email: String; let password: String; let displayName: String }
 private struct LoginBody: Encodable { let email: String; let password: String }
+private struct DeleteAccountBody: Encodable { let password: String }
 private struct ShelfBody: Encodable { let ingredientIds: [String] }
 private struct RecipesResponse: Decodable { let recipes: [RecipeSummary] }
 private struct IngredientsResponse: Decodable { let ingredients: [Ingredient] }

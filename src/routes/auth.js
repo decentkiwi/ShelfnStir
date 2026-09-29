@@ -67,3 +67,27 @@ export async function handleMe(request, env) {
   if (!user) return jsonError("Not signed in", 401);
   return json(user);
 }
+
+// Required by App Store Review Guideline 5.1.1(v): any app that lets people
+// create an account must also let them delete it, in-app. Requires the
+// current password so a stolen session cookie alone can't destroy the
+// account. Deleting the user row cascades to favorites/shelves/comments and
+// nulls out ratings.user_id (schema.sql), so no orphaned-but-owned data
+// remains, while anonymous rating counts stay intact.
+export async function handleDeleteAccount(request, env) {
+  const sessionUser = await getSessionUser(request, env);
+  if (!sessionUser) return jsonError("Not signed in", 401);
+
+  const body = await request.json().catch(() => null);
+  const password = typeof body?.password === "string" ? body.password : "";
+  if (!password) return jsonError("Enter your password to confirm");
+
+  const sql = db(env);
+  const [user] = await sql`select password_hash from users where id = ${sessionUser.id}`;
+  if (!user || !(await verifyPassword(password, user.password_hash))) {
+    return jsonError("Incorrect password", 401);
+  }
+
+  await sql`delete from users where id = ${sessionUser.id}`;
+  return json({ ok: true }, { headers: { "Set-Cookie": clearSessionCookieHeader(request) } });
+}

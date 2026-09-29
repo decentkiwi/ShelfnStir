@@ -73,6 +73,13 @@ final class AppState {
     shelfIds = []
   }
 
+  func deleteAccount(password: String) async throws {
+    try await api.deleteAccount(password: password)
+    currentUser = nil
+    favoriteIds = []
+    shelfIds = []
+  }
+
   func toggleFavorite(_ recipeId: String) {
     let isFavorite = favoriteIds.contains(recipeId)
     if isFavorite {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AccountView: View {
   @Environment(AppState.self) private var appState
+  @State private var showingDeleteAccount = false
 
   var body: some View {
     ScrollView {
@@ -16,6 +17,9 @@ struct AccountView: View {
     }
     .background(Color.brandPaper)
     .navigationTitle("Account")
+    .sheet(isPresented: $showingDeleteAccount) {
+      DeleteAccountSheet()
+    }
   }
 
   private func signedInView(user: User) -> some View {
@@ -74,6 +78,13 @@ struct AccountView: View {
       .buttonStyle(PressableButtonStyle())
       .foregroundStyle(Color.brandOxblood)
       .background(Color.brandOxblood.opacity(0.1), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+      Button("Delete account") {
+        showingDeleteAccount = true
+      }
+      .font(.footnote)
+      .foregroundStyle(Color.brandMuted)
+      .frame(maxWidth: .infinity)
     }
     .navigationDestination(for: String.self) { recipeId in
       RecipeDetailView(recipeId: recipeId)
@@ -84,6 +95,91 @@ struct AccountView: View {
     let parts = name.split(separator: " ")
     let letters = parts.prefix(2).compactMap(\.first)
     return String(letters).uppercased()
+  }
+}
+
+// Required by App Store Review Guideline 5.1.1(v). Asks for the password
+// again so a momentarily-unlocked phone can't be used to destroy the
+// account by accident, and confirms destructively before submitting.
+private struct DeleteAccountSheet: View {
+  @Environment(AppState.self) private var appState
+  @Environment(\.dismiss) private var dismiss
+
+  @State private var password = ""
+  @State private var errorMessage: String?
+  @State private var isSubmitting = false
+  @State private var showingConfirmation = false
+
+  var body: some View {
+    NavigationStack {
+      VStack(alignment: .leading, spacing: 16) {
+        Text("This permanently deletes your account, favorites, and pantry shelf. This can't be undone.")
+          .font(.subheadline)
+          .foregroundStyle(Color.brandMuted)
+
+        BrandField(placeholder: "Confirm your password", text: $password, isSecure: true)
+          .textContentType(.password)
+
+        if let errorMessage {
+          Text(errorMessage).foregroundStyle(Color.brandOxblood).font(.footnote)
+        }
+
+        Button(role: .destructive) {
+          showingConfirmation = true
+        } label: {
+          HStack {
+            Spacer()
+            if isSubmitting {
+              ProgressView().tint(Color.brandChalk)
+            } else {
+              Text("Delete my account").font(.subheadline.weight(.bold))
+            }
+            Spacer()
+          }
+          .padding(.vertical, 12)
+        }
+        .buttonStyle(PressableButtonStyle())
+        .foregroundStyle(Color.brandChalk)
+        .background(Color.brandOxblood, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .disabled(isSubmitting || password.isEmpty)
+        .opacity(isSubmitting || password.isEmpty ? 0.5 : 1)
+
+        Spacer()
+      }
+      .padding(16)
+      .background(Color.brandPaper)
+      .navigationTitle("Delete account")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .cancellationAction) {
+          Button("Cancel") { dismiss() }
+        }
+      }
+      .confirmationDialog(
+        "Permanently delete your account?",
+        isPresented: $showingConfirmation,
+        titleVisibility: .visible
+      ) {
+        Button("Delete account", role: .destructive) { submit() }
+        Button("Cancel", role: .cancel) {}
+      } message: {
+        Text("This can't be undone.")
+      }
+    }
+  }
+
+  private func submit() {
+    errorMessage = nil
+    isSubmitting = true
+    Task {
+      do {
+        try await appState.deleteAccount(password: password)
+        dismiss()
+      } catch {
+        errorMessage = error.localizedDescription
+      }
+      isSubmitting = false
+    }
   }
 }
 
