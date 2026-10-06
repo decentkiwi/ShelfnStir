@@ -1,21 +1,26 @@
 import SwiftUI
 
 struct RecipeListView: View {
-  @Environment(AppState.self) private var appState
-  @State private var searchText = ""
+  @Environment(AppState.self) private var environmentState
 
   private var filtered: [RecipeSummary] {
-    guard !searchText.isEmpty else { return appState.recipes }
-    let query = searchText.lowercased()
+    let appState = environmentState
+    guard !appState.recipeSearch.isEmpty else { return appState.recipes }
+    let query = appState.recipeSearch.lowercased()
     return appState.recipes.filter { recipe in
       recipe.name.lowercased().contains(query)
         || recipe.type.lowercased().contains(query)
         || recipe.tags.contains { $0.contains(query) }
+        || recipe.flavorTags.contains { $0.contains(query) }
+        || recipe.effortTags.contains { $0.contains(query) }
         || recipe.required.contains { $0.contains(query) }
     }
   }
 
   var body: some View {
+    // @Bindable lets the search field write straight into shared state, so
+    // Home's mood chips can pre-fill it.
+    @Bindable var appState = environmentState
     Group {
       if appState.isLoadingRecipes {
         ProgressView("Loading recipes…")
@@ -37,8 +42,8 @@ struct RecipeListView: View {
         .animation(.easeInOut(duration: 0.2), value: filtered.map(\.id))
       }
     }
-    .searchable(text: $searchText, prompt: "Search by drink, spirit, or mood")
-    .navigationTitle("Recipes")
+    .searchable(text: $appState.recipeSearch, prompt: "Search by drink, spirit, or mood")
+    .brandHeader("Recipes")
     .navigationDestination(for: String.self) { recipeId in
       RecipeDetailView(recipeId: recipeId)
     }

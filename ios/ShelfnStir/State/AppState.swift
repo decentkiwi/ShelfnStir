@@ -5,8 +5,22 @@ import Foundation
 // `@Published` wrappers needed, unlike the older ObservableObject pattern.
 // One instance of this is created once in the App and handed to every view
 // via `.environment()`, so any screen can read or act on shared state.
+enum AppTab: Hashable {
+  case home, recipes, pantry, account
+}
+
 @Observable
 final class AppState {
+  // Lets Home's buttons and mood chips jump to another tab, optionally
+  // pre-filling the Recipes search box.
+  var selectedTab: AppTab = .home
+  var recipeSearch = ""
+
+  func showRecipes(matching query: String = "") {
+    recipeSearch = query
+    selectedTab = .recipes
+  }
+
   var recipes: [RecipeSummary] = []
   var ingredients: [Ingredient] = []
   var currentUser: User?

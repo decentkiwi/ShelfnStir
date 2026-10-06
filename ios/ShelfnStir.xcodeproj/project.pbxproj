@@ -12,6 +12,7 @@
 		22F5EF5FAEE0C37D1F9A9E07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11F149061D5E255D0CA28C4D /* Assets.xcassets */; };
 		232E0D49443AE0C332AE80FA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A79331A92BFEBAD2F43B84 /* Theme.swift */; };
 		256A35157658C2F138960C41 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AD8FF96DC7ACB8E53E7CF2 /* Recipe.swift */; };
+		2C4C14D9F1F0A75477309149 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD546A28F83293C459A4B28 /* HomeView.swift */; };
 		36DB5B98DC02D81AE9AC8004 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D47B4D378A21B68BBF22E4A /* Ingredient.swift */; };
 		5B8AAF6FFE341027B0D23820 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CBF06EDB3ABC6F7816879A /* APIClient.swift */; };
 		7869A03FB887927FDF34D16B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3969B5A26F48B3648658971C /* RootView.swift */; };
@@ -35,6 +36,7 @@
 		E76F825F1C91ACDC1AD007DE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E8AD8FF96DC7ACB8E53E7CF2 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 		EB36B2EB41E7C391148249EA /* RecipeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
+		EDD546A28F83293C459A4B28 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE4A85418D40B7A0B94DADD5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		FE7DBFE90A52628A26F9D924 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		FF7600924DA50673B43F0A59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				FE7DBFE90A52628A26F9D924 /* AccountView.swift */,
+				EDD546A28F83293C459A4B28 /* HomeView.swift */,
 				648074B928E1C4074A3C7CBE /* PantryView.swift */,
 				EB36B2EB41E7C391148249EA /* RecipeDetailView.swift */,
 				349C76D673CD84342E4BC95C /* RecipeListView.swift */,
@@ -184,6 +187,7 @@
 				5B8AAF6FFE341027B0D23820 /* APIClient.swift in Sources */,
 				C302D02B36A1477232726897 /* AccountView.swift in Sources */,
 				F378E507C7A36B07C5FE3B68 /* AppState.swift in Sources */,
+				2C4C14D9F1F0A75477309149 /* HomeView.swift in Sources */,
 				36DB5B98DC02D81AE9AC8004 /* Ingredient.swift in Sources */,
 				D4C27B92A19F12EB0F14530D /* PantryView.swift in Sources */,
 				256A35157658C2F138960C41 /* Recipe.swift in Sources */,
