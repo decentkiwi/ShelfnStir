@@ -7,6 +7,7 @@ struct PantryView: View {
   private var close: [AppState.Match] { appState.pantryMatches().filter { !$0.missing.isEmpty } }
 
   var body: some View {
+    ScrollViewReader { proxy in
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
         VStack(alignment: .leading, spacing: 10) {
@@ -34,6 +35,8 @@ struct PantryView: View {
           }
         }
 
+        summaryCard(proxy: proxy)
+
         ForEach(appState.ingredientGroups) { group in
           VStack(alignment: .leading, spacing: 10) {
             Eyebrow(text: group.title)
@@ -55,19 +58,64 @@ struct PantryView: View {
           .cardBackground()
         }
 
-        if !ready.isEmpty {
-          matchSection(title: "Ready now", tint: .brandTeal, matches: ready)
+        VStack(alignment: .leading, spacing: 20) {
+          if !ready.isEmpty {
+            matchSection(title: "Ready now", tint: .brandTeal, matches: ready)
+          }
+          if !close.isEmpty {
+            matchSection(title: "Worth a run (missing 1-2)", tint: .brandGold, matches: close)
+          }
         }
-        if !close.isEmpty {
-          matchSection(title: "Worth a run (missing 1-2)", tint: .brandGold, matches: close)
-        }
+        .id("results")
       }
       .padding(16)
     }
+    .sensoryFeedback(.selection, trigger: appState.shelfIds)
     .background(Color.brandPaper)
-    .navigationTitle("Pantry")
+    .brandHeader("Pantry")
     .navigationDestination(for: String.self) { recipeId in
       RecipeDetailView(recipeId: recipeId)
+    }
+    }
+  }
+
+  // Sits right under the presets so the effect of every tap is visible
+  // without scrolling past the whole ingredient list to find the results.
+  @ViewBuilder
+  private func summaryCard(proxy: ScrollViewProxy) -> some View {
+    if appState.shelfIds.isEmpty {
+      HStack(spacing: 10) {
+        Image(systemName: "hand.tap").foregroundStyle(Color.brandOlive)
+        Text("Tap the bottles you own, or pick a preset, and we'll show what you can make.")
+          .font(.subheadline)
+          .foregroundStyle(Color.brandMuted)
+      }
+      .padding(14)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .cardBackground()
+    } else {
+      Button {
+        withAnimation(.easeInOut(duration: 0.4)) { proxy.scrollTo("results", anchor: .top) }
+      } label: {
+        HStack(spacing: 12) {
+          VStack(alignment: .leading, spacing: 4) {
+            Text("\(ready.count) ready now")
+              .font(.display(18))
+              .foregroundStyle(Color.brandInk)
+            Text("\(close.count) more worth a run · \(appState.shelfIds.count) on your shelf")
+              .font(.footnote)
+              .foregroundStyle(Color.brandMuted)
+          }
+          Spacer()
+          Image(systemName: "arrow.down.circle.fill")
+            .font(.title2)
+            .foregroundStyle(Color.brandTeal)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardBackground()
+      }
+      .buttonStyle(PressableButtonStyle())
     }
   }
 
@@ -124,7 +172,7 @@ private struct MatchRow: View {
   let tint: Color
 
   var body: some View {
-    HStack(alignment: .top, spacing: 12) {
+    HStack(alignment: .center, spacing: 12) {
       VStack(alignment: .leading, spacing: 6) {
         Text(match.recipe.name)
           .font(.display(17))

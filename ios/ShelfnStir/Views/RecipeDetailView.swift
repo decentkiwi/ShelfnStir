@@ -19,9 +19,20 @@ struct RecipeDetailView: View {
         ProgressView().tint(.brandTeal)
       }
     }
+    .background(Color.brandPaper)
     .navigationTitle(recipe?.name ?? "")
     .navigationBarTitleDisplayMode(.inline)
+    .toolbarBackground(Color.brandPaper, for: .navigationBar)
+    .toolbarBackground(.visible, for: .navigationBar)
+    .sensoryFeedback(.success, trigger: isFavorite)
     .toolbar {
+      ToolbarItem(placement: .topBarTrailing) {
+        if let url = URL(string: "https://decentkiwi.github.io/ShelfnStir/recipes/\(recipeId)/") {
+          ShareLink(item: url, subject: Text(recipe?.name ?? "Shelf&Stir recipe")) {
+            Image(systemName: "square.and.arrow.up").foregroundStyle(Color.brandMuted)
+          }
+        }
+      }
       ToolbarItem(placement: .topBarTrailing) {
         Button {
           withAnimation(.spring(duration: 0.35, bounce: 0.5)) {

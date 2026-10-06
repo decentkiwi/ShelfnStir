@@ -16,7 +16,7 @@ struct AccountView: View {
       .padding(16)
     }
     .background(Color.brandPaper)
-    .navigationTitle("Account")
+    .brandHeader("Account")
     .sheet(isPresented: $showingDeleteAccount) {
       DeleteAccountSheet()
     }

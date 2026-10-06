@@ -88,6 +88,40 @@ extension View {
   }
 }
 
+// Header shared by the three root tabs: the website's ink "S" brand mark next
+// to a serif page title. Uses SwiftUI's own toolbar APIs rather than UIKit
+// appearance overrides, which fight with the system's navigation bar styling.
+struct BrandMark: View {
+  var size: CGFloat = 26
+
+  var body: some View {
+    Text("S")
+      .font(.display(size * 0.62))
+      .foregroundStyle(Color(light: (247, 242, 232), dark: (247, 242, 232)))
+      .frame(width: size, height: size)
+      .background(Color(light: (31, 27, 23), dark: (58, 53, 47)), in: RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
+  }
+}
+
+extension View {
+  func brandHeader(_ title: String) -> some View {
+    self
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbarBackground(Color.brandPaper, for: .navigationBar)
+      .toolbarBackground(.visible, for: .navigationBar)
+      .toolbar {
+        ToolbarItem(placement: .principal) {
+          HStack(spacing: 8) {
+            BrandMark()
+            Text(title)
+              .font(.display(20))
+              .foregroundStyle(Color.brandInk)
+          }
+        }
+      }
+  }
+}
+
 // A subtle tactile press effect for primary buttons, since the default
 // iOS button styles feel flat next to the rest of the branded UI.
 struct PressableButtonStyle: ButtonStyle {
