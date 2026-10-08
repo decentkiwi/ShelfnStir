@@ -1,4 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("assets/fonts/manrope-latin-variable.woff2") format("woff2");
+}
 
 :root {
   color-scheme: light;
@@ -1279,6 +1285,308 @@ h3 {
   padding: 18px clamp(18px, 4vw, 58px) clamp(46px, 8vw, 94px);
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.account-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.account-name {
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.account-delete-link {
+  min-height: auto;
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.account-control button {
+  min-height: 34px;
+  padding: 0 14px;
+  color: var(--chalk);
+  background: var(--ink);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.auth-dialog {
+  width: min(420px, calc(100vw - 28px));
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.auth-dialog::backdrop {
+  background: rgba(19, 15, 12, 0.56);
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+}
+
+.auth-form h2 {
+  margin: 0;
+  font-size: 1.9rem;
+}
+
+.auth-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.auth-form label,
+.comment-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.auth-form input,
+.comment-form textarea {
+  padding: 0 12px;
+  color: var(--ink);
+  background: var(--chalk);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+
+.auth-form input {
+  min-height: 44px;
+}
+
+.auth-form input:focus,
+.comment-form textarea:focus {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+
+.auth-error,
+.comment-error {
+  min-height: 1.2em;
+  margin: 0;
+  color: var(--oxblood);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.auth-submit,
+.comment-form button {
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--chalk);
+  background: var(--ink);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.auth-submit:disabled,
+.comment-form button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.auth-switch,
+.comment-signin button {
+  padding: 0;
+  color: var(--teal);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.delete-confirm-row {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(141, 38, 56, 0.08);
+  border: 1px solid rgba(141, 38, 56, 0.22);
+  border-radius: 8px;
+}
+
+.delete-confirm-row p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.delete-confirm-yes {
+  min-height: 44px;
+  padding: 0 18px;
+  color: var(--chalk);
+  background: var(--oxblood);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.delete-confirm-cancel {
+  padding: 0;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.auth-close {
+  justify-self: end;
+  width: 34px;
+  height: 34px;
+  color: var(--ink);
+  background: #efe6d8;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.community {
+  padding: 0 clamp(18px, 4vw, 58px) clamp(46px, 8vw, 94px);
+}
+
+.community-inner {
+  display: grid;
+  gap: 32px;
+  padding: 0 clamp(20px, 4vw, 42px);
+}
+
+.community h3 {
+  margin: 0 0 10px;
+}
+
+.rating-summary {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.rating-summary:empty {
+  display: none;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  padding: 0 2px;
+  color: #cdbfae;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 2.1rem;
+  line-height: 1;
+}
+
+.star.active {
+  color: var(--gold);
+}
+
+.rating-status {
+  min-height: 1.2em;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.comment-form {
+  display: grid;
+  gap: 10px;
+  max-width: 640px;
+}
+
+.comment-form textarea {
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.comment-form button {
+  justify-self: start;
+  min-height: 40px;
+}
+
+.comment-signin {
+  margin: 0;
+  color: var(--muted);
+}
+
+.comment-list {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comment {
+  padding: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.comment-meta {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.comment-meta strong {
+  color: var(--ink);
+}
+
+.comment p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.comment-empty {
+  color: var(--muted);
+}
+
 li {
   margin-bottom: 8px;
   line-height: 1.45;
@@ -1567,5 +1875,258 @@ li {
 
   .dialog-body h1 {
     font-size: clamp(2rem, 12vw, 3rem);
+  }
+}
+
+/* Glassware: Bar Guide section (generated by build.js) and the per-recipe
+   "Serve it in" note. */
+.glass-intro {
+  max-width: 760px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.glass-basics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.glass-basics > div {
+  padding: 16px 18px;
+  background: var(--chalk);
+  border-left: 3px solid var(--teal);
+  border-radius: 6px;
+}
+
+.glass-basics h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-brand);
+  font-size: 1.1rem;
+}
+
+.glass-basics p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.glass-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.glass-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  scroll-margin-top: 90px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.glass-card:target {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(36, 99, 107, 0.18);
+}
+
+.glass-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.glass-card h3 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.glass-meta {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.glass-icon {
+  flex: none;
+  color: var(--teal);
+}
+
+.glass-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.55;
+}
+
+.glass-card .glass-serves strong,
+.glass-card .glass-drinks strong {
+  color: var(--ink);
+}
+
+.glass-tip {
+  padding: 9px 11px;
+  background: rgba(189, 132, 49, 0.12);
+  border-radius: 6px;
+}
+
+.glass-drinks {
+  margin-top: auto !important;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem !important;
+}
+
+.glass-drinks a {
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.glass-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 22px;
+  padding: 16px 18px;
+  background: var(--chalk);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+}
+
+.glass-note .eyebrow {
+  margin: 0 0 2px;
+}
+
+.glass-note h4 {
+  margin: 0 0 6px;
+  font-family: var(--font-brand);
+  font-size: 1.2rem;
+}
+
+.glass-note p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.glass-note a {
+  color: var(--teal);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+@media (max-width: 920px) {
+  .glass-grid,
+  .glass-basics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Legal pages (privacy, terms, responsible drinking, 404) */
+.text-page.legal h1 {
+  max-width: 16ch;
+  font-size: clamp(2.4rem, 6.4vw, 4.6rem);
+}
+
+.legal-updated {
+  margin: 0 0 26px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.text-stack h2 {
+  margin: 18px 0 0;
+  color: var(--ink);
+  font-family: var(--font-brand);
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.text-stack ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.text-stack a {
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.footer-note {
+  margin-top: 6px !important;
+  font-size: 0.82rem;
+}
+
+.safety-note {
+  margin: 14px 0 0;
+  padding: 11px 13px;
+  color: #5b2a1f;
+  background: rgba(141, 38, 56, 0.08);
+  border-left: 3px solid var(--oxblood);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Sign-up consent in the auth dialog */
+.auth-hint {
+  margin: -6px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.auth-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.auth-consent input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.auth-consent a {
+  color: var(--teal);
+  font-weight: 800;
+}
+
+/* Phones: keep every nav link and the sign-in button reachable instead of
+   hiding them in a horizontally scrolling strip. */
+@media (max-width: 760px) {
+  .site-header {
+    flex-wrap: wrap;
+  }
+
+  .site-header nav {
+    flex-wrap: wrap;
+    width: 100%;
+    overflow-x: visible;
+    row-gap: 8px;
+    align-items: center;
+  }
+
+  .site-header .account-control {
+    margin-left: auto;
   }
 }

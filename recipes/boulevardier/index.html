@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Boulevardier Recipe | Shelf&amp;Stir</title>
     <meta name="description" content="Bourbon or rye in place of gin, rounded by Campari and sweet vermouth. Full ingredients, method, and smart substitutions for the Boulevardier." />
     <link rel="canonical" href="https://decentkiwi.github.io/ShelfnStir/recipes/boulevardier/" />
@@ -13,8 +14,8 @@
     <meta property="og:url" content="https://decentkiwi.github.io/ShelfnStir/recipes/boulevardier/" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../assets/favicon.png" />
-    <link rel="stylesheet" href="../../styles.css?v=20260829-mobile-polish" />
-    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Boulevardier","description":"Bourbon or rye in place of gin, rounded by Campari and sweet vermouth.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-09-17","recipeCategory":"Whiskey Negroni","recipeCuisine":"Cocktail","keywords":"classic, stirred, whiskey, bitter, bitter, herbal","totalTime":"PT5M","recipeYield":"1 cocktail","recipeIngredient":["1 1/2 oz bourbon","1 oz Campari","1 oz sweet vermouth","Orange peel"],"recipeInstructions":[{"@type":"HowToStep","text":"Stir all liquid ingredients with ice."},{"@type":"HowToStep","text":"Strain over a large cube."},{"@type":"HowToStep","text":"Garnish with orange peel."}]}</script>
+    <link rel="stylesheet" href="../../styles.css?v=20261006-glassware" />
+    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Boulevardier","description":"Bourbon or rye in place of gin, rounded by Campari and sweet vermouth.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-10-06","recipeCategory":"Whiskey Negroni","recipeCuisine":"Cocktail","keywords":"classic, stirred, whiskey, bitter, bitter, herbal","totalTime":"PT5M","recipeYield":"1 cocktail","recipeIngredient":["1 1/2 oz bourbon","1 oz Campari","1 oz sweet vermouth","Orange peel"],"recipeInstructions":[{"@type":"HowToStep","text":"Stir all liquid ingredients with ice."},{"@type":"HowToStep","text":"Strain over a large cube."},{"@type":"HowToStep","text":"Garnish with orange peel."}]}</script>
   </head>
   <body data-recipe-id="boulevardier">
     <header class="site-header">
@@ -47,6 +48,7 @@
             <span>Whiskey Negroni</span>
             <span>5 min</span>
             <span>Rich</span>
+            <span>Rocks glass</span>
           </div>
 
           <div class="dialog-tools">
@@ -72,6 +74,7 @@
               <div id="dialog-substitutions" class="substitution-box">
                 <h4>Smart swaps</h4><p><strong>bourbon:</strong> Rye whiskey works when you want a drier and spicier version.</p>
               </div>
+              
             </div>
             <div>
               <h3>Method</h3>
@@ -80,10 +83,41 @@
                 <li>Strain over a large cube.</li>
                 <li>Garnish with orange peel.</li>
               </ol>
+              <aside class="glass-note" aria-label="Recommended glass">
+                <svg class="glass-icon" viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M13 14h38l-3 38c0 2-1 4-4 4H20c-3 0-4-2-4-4Z"/><path d="M26 28h12v12H26Z"/></svg>
+                <div>
+                  <p class="eyebrow">Serve it in</p>
+                  <h4>Rocks glass</h4>
+                  <p>The wide mouth leaves room for one large cube. Big ice melts slowly, so the drink stays cold without watering down, and you can express a citrus peel right over the surface.</p>
+                  <a href="../../bar-guide.html#glass-rocks">More about glassware</a>
+                </div>
+              </aside>
             </div>
           </div>
         </div>
       </article>
+
+      <section class="community" id="community" hidden aria-label="Ratings and comments">
+        <div class="community-inner">
+          <p class="rating-summary" id="rating-summary"></p>
+          <div class="rating-input" id="rating-input" hidden>
+            <h3>Rate this drink</h3>
+            <div class="rating-stars" role="group" aria-label="Rate this drink from 1 to 5 stars">
+              <button type="button" class="star" data-rating="1" aria-label="Rate 1 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="2" aria-label="Rate 2 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="3" aria-label="Rate 3 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="4" aria-label="Rate 4 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="5" aria-label="Rate 5 out of 5" aria-pressed="false">&#9733;</button>
+            </div>
+            <p class="rating-status" id="rating-status" aria-live="polite"></p>
+          </div>
+          <div class="comments" id="comments" hidden>
+            <h3>Comments</h3>
+            <div id="comment-form-slot"></div>
+            <ul class="comment-list" id="comment-list"></ul>
+          </div>
+        </div>
+      </section>
 
       <section class="pathways" aria-labelledby="related-title">
         <div class="section-heading">
@@ -103,6 +137,7 @@
           <span>Low-ABV Highball</span>
           <span>4 min</span>
           <span>Leisurely</span>
+          <span>Highball</span>
         </div>
         <div class="card-actions">
           <a href="../americano/">View recipe</a>
@@ -120,6 +155,7 @@
           <span>Stirred Classic</span>
           <span>5 min</span>
           <span>Silky</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../manhattan/">View recipe</a>
@@ -137,6 +173,7 @@
           <span>Bitter Classic</span>
           <span>4 min</span>
           <span>Bitter</span>
+          <span>Rocks glass</span>
         </div>
         <div class="card-actions">
           <a href="../negroni/">View recipe</a>
@@ -154,6 +191,7 @@
           <span>Whiskey Classic</span>
           <span>5 min</span>
           <span>Spirit-forward</span>
+          <span>Rocks glass</span>
         </div>
         <div class="card-actions">
           <a href="../old-fashioned/">View recipe</a>
@@ -169,17 +207,21 @@
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="../../privacy.html">Privacy</a>
-        <a href="../../responsible-drinking.html">Responsible drinking</a>
+        <a href="../../recipes.html">Recipes</a>
         <a href="../../bar-guide.html">Bar Guide</a>
+        <a href="../../privacy.html">Privacy</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
 
-    <script src="../../data/recipes-data.js?v=20260829"></script>
+    <script src="../../data/recipes-data.js?v=20261006"></script>
     <script src="../../data/pantry-config.js?v=20260829"></script>
+    <script src="../../data/glassware.js?v=20261006"></script>
     <script src="../../data/recipe-helpers.js?v=20260829"></script>
-    <script src="../../script.js?v=20260829-better-card-tags"></script>
+    <script src="../../script.js?v=20261006-glassware"></script>
   </body>
 </html>

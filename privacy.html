@@ -3,17 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy | Shelf&Stir</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <title>Privacy Policy | Shelf&Stir</title>
     <meta
       name="description"
-      content="Shelf and Stir privacy note for local ingredient storage and basic website use."
+      content="Shelf and Stir privacy policy: what we collect for optional accounts, what stays on your device, who hosts the service, and how to delete your data."
     />
-    <meta property="og:title" content="Privacy | Shelf&Stir" />
-    <meta property="og:description" content="How Shelf and Stir handles local shelf selections and privacy." />
+    <meta property="og:title" content="Privacy Policy | Shelf&Stir" />
+    <meta property="og:description" content="What Shelf and Stir collects for optional accounts, what stays on your device, and how to delete your data." />
     <meta property="og:image" content="assets/og-image.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/favicon.png" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20261006-glassware" />
   </head>
   <body>
     <header class="site-header">
@@ -29,14 +30,64 @@
     </header>
 
     <main id="top">
-      <section class="text-page" aria-labelledby="privacy-title">
-        <p class="eyebrow">Privacy</p>
-        <h1 id="privacy-title">Your shelf stays on your device</h1>
+      <section class="text-page legal" aria-labelledby="privacy-title">
+        <p class="eyebrow">Privacy Policy</p>
+        <h1 id="privacy-title">What we collect, and what stays on your device</h1>
+        <p class="legal-updated">Last updated October 6, 2026</p>
         <div class="text-stack">
-          <p>Shelf&Stir saves selected ingredients in your browser so the matcher can remember your home shelf between visits.</p>
-          <p>Those selections are stored locally on your device. They are not sent to a server by this static version of the site.</p>
-          <p>The site does not include accounts, payments, comments, or recipe submissions. If those features are added later, the privacy policy should be updated before launch.</p>
-          <p>You can clear your saved shelf from the matcher by using the Clear all button.</p>
+          <h2>The short version</h2>
+          <ul>
+            <li>You can browse recipes, use the pantry matcher, and rate drinks without an account.</li>
+            <li>We don't run ads, analytics, or tracking, and we never sell your data.</li>
+            <li>If you create an account, we store your email, display name, and a salted hash of your password, plus the favorites, shelf, and comments you add.</li>
+            <li>You can permanently delete your account yourself at any time.</li>
+          </ul>
+
+          <h2>What we collect</h2>
+          <p><strong>Without an account.</strong> Your pantry shelf, favorites, and recently viewed drinks are saved only in your browser's local storage (or on-device storage in the app). They are never sent to us. When you rate a drink, your device generates a random token that is sent with the star rating so each device counts once. The token doesn't identify you.</p>
+          <p><strong>With an account.</strong> Creating an account is optional. We store your email address, display name, and a salted hash of your password (never the password itself). Signing in syncs your favorites and shelf across devices and lets you comment. Comments are public and show your display name. Ratings you submit while signed in are linked to your account.</p>
+          <p><strong>Technical data.</strong> Like any website, the services that deliver Shelf&amp;Stir process your IP address and basic request details (such as the page requested and browser type) to serve the pages and protect against abuse. Our hosting providers may keep short-lived request logs. We use IP addresses only momentarily to rate-limit requests, and we don't store them in our database.</p>
+
+          <h2>Cookies and local storage</h2>
+          <p>When you sign in, we set one session cookie so you stay signed in. It is HttpOnly, lasts up to 30 days, and is used for nothing else. We also use your browser's local storage for your shelf, favorites, recent drinks, and rating token. These are strictly necessary for the features you use, so we don't show a cookie banner. Signing out or clearing your browser data removes them.</p>
+
+          <h2>How we use your information</h2>
+          <p>We use it only to run the service: to sign you in, sync your saved items, show your comments, count ratings, keep the service secure, and respond to requests. We don't use it for advertising or profiling.</p>
+
+          <h2>Who handles your data</h2>
+          <p>We use a small number of service providers to run Shelf&amp;Stir. They process data on our behalf and only to provide their service:</p>
+          <ul>
+            <li><strong>Cloudflare</strong> hosts the site and API and delivers it over their network.</li>
+            <li><strong>Neon</strong> hosts the database that stores accounts, favorites, shelves, ratings, and comments.</li>
+            <li><strong>GitHub Pages</strong> may serve the static pages of the website.</li>
+          </ul>
+          <p>Fonts and images are hosted by us. We don't load third-party scripts, analytics, advertising, or social media widgets.</p>
+
+          <h2>How long we keep it</h2>
+          <p>Account data stays until you delete your account. Local data stays on your device until you clear it. Our database provider may keep short-lived backups after a deletion before they are overwritten.</p>
+
+          <h2>Deleting your account</h2>
+          <p>You can permanently delete your account in the app (Account, then Delete account) or on the website (Delete account in the header while signed in). This removes your account, favorites, shelf, and comments. Star ratings you gave remain as anonymous totals, with the link to your account removed. Deletion can't be undone.</p>
+
+          <h2>Security</h2>
+          <p>Traffic is encrypted with HTTPS. Passwords are stored only as salted hashes. Sign-in and write requests are rate-limited, and session cookies are HttpOnly. No system is perfectly secure, so please use a strong, unique password.</p>
+
+          <h2>Your choices and rights</h2>
+          <p>Depending on where you live (for example under the GDPR, UK GDPR, or California law), you may have the right to access, correct, delete, or export your personal data, or to object to how it's used. Deleting your account covers deletion. For any other request, contact us using the details below and we'll respond within a reasonable time.</p>
+
+          <h2>Age</h2>
+          <p>Shelf&amp;Stir is a cocktail recipe resource and isn't directed at children. You must be of legal drinking age where you live, and at least 18, to create an account. If you're not of legal drinking age, please stick to the <a href="responsible-drinking.html">zero-proof recipes</a>. If we learn that an account belongs to someone who isn't eligible, we'll delete it.</p>
+
+          <h2>International use</h2>
+          <p>Our providers operate globally, so your information may be processed in countries other than your own.</p>
+
+          <h2>Changes to this policy</h2>
+          <p>If we change how we handle data, we'll update this page and the date above, and we'll make the change clear before it takes effect if it's significant.</p>
+
+          <h2>Contact</h2>
+          <p>Questions or requests about your data: open an issue at <a href="https://github.com/decentkiwi/ShelfnStir/issues" rel="noopener">github.com/decentkiwi/ShelfnStir/issues</a>. Please don't post passwords or other personal details publicly. Say that you have a privacy request and we'll arrange a private way to follow up.</p>
+
+          <p>See also our <a href="terms.html">Terms of Use</a>.</p>
         </div>
       </section>
     </main>
@@ -45,11 +96,14 @@
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="responsible-drinking.html">Responsible drinking</a>
-        <a href="bar-guide.html">Bar Guide</a>
         <a href="recipes.html">Recipes</a>
+        <a href="bar-guide.html">Bar Guide</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
   </body>

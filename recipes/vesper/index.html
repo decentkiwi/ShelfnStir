@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Vesper Recipe | Shelf&amp;Stir</title>
     <meta name="description" content="Gin, vodka, and Lillet Blanc served extremely cold with a lemon peel. Full ingredients, method, and smart substitutions for the Vesper." />
     <link rel="canonical" href="https://decentkiwi.github.io/ShelfnStir/recipes/vesper/" />
@@ -13,8 +14,8 @@
     <meta property="og:url" content="https://decentkiwi.github.io/ShelfnStir/recipes/vesper/" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../assets/favicon.png" />
-    <link rel="stylesheet" href="../../styles.css?v=20260829-mobile-polish" />
-    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Vesper","description":"Gin, vodka, and Lillet Blanc served extremely cold with a lemon peel.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-09-17","recipeCategory":"Niche Martini","recipeCuisine":"Cocktail","keywords":"niche, stirred, gin, vodka, refreshing, boozy","totalTime":"PT5M","recipeYield":"1 cocktail","recipeIngredient":["3 oz gin","1 oz vodka","1/2 oz Lillet Blanc","Lemon peel"],"recipeInstructions":[{"@type":"HowToStep","text":"Stir ingredients with ice until very cold."},{"@type":"HowToStep","text":"Strain into a chilled glass."},{"@type":"HowToStep","text":"Garnish with a lemon peel."}]}</script>
+    <link rel="stylesheet" href="../../styles.css?v=20261006-glassware" />
+    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Vesper","description":"Gin, vodka, and Lillet Blanc served extremely cold with a lemon peel.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-10-06","recipeCategory":"Niche Martini","recipeCuisine":"Cocktail","keywords":"niche, stirred, gin, vodka, refreshing, boozy","totalTime":"PT5M","recipeYield":"1 cocktail","recipeIngredient":["3 oz gin","1 oz vodka","1/2 oz Lillet Blanc","Lemon peel"],"recipeInstructions":[{"@type":"HowToStep","text":"Stir ingredients with ice until very cold."},{"@type":"HowToStep","text":"Strain into a chilled glass."},{"@type":"HowToStep","text":"Garnish with a lemon peel."}]}</script>
   </head>
   <body data-recipe-id="vesper">
     <header class="site-header">
@@ -47,6 +48,7 @@
             <span>Niche Martini</span>
             <span>5 min</span>
             <span>Piercing</span>
+            <span>Martini glass</span>
           </div>
 
           <div class="dialog-tools">
@@ -69,9 +71,8 @@
                 <li>1/2 oz Lillet Blanc</li>
                 <li>Lemon peel</li>
               </ul>
-              <div id="dialog-substitutions" class="substitution-box">
-                
-              </div>
+              
+              
             </div>
             <div>
               <h3>Method</h3>
@@ -80,10 +81,41 @@
                 <li>Strain into a chilled glass.</li>
                 <li>Garnish with a lemon peel.</li>
               </ol>
+              <aside class="glass-note" aria-label="Recommended glass">
+                <svg class="glass-icon" viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 12h48L32 36Z"/><path d="M32 36v16M21 54h22"/></svg>
+                <div>
+                  <p class="eyebrow">Serve it in</p>
+                  <h4>Martini glass</h4>
+                  <p>The wide surface lifts the aroma of a lemon twist or olive and keeps a very cold drink looking sharp. It warms fast, so pour smaller drinks and finish them quickly.</p>
+                  <a href="../../bar-guide.html#glass-martini">More about glassware</a>
+                </div>
+              </aside>
             </div>
           </div>
         </div>
       </article>
+
+      <section class="community" id="community" hidden aria-label="Ratings and comments">
+        <div class="community-inner">
+          <p class="rating-summary" id="rating-summary"></p>
+          <div class="rating-input" id="rating-input" hidden>
+            <h3>Rate this drink</h3>
+            <div class="rating-stars" role="group" aria-label="Rate this drink from 1 to 5 stars">
+              <button type="button" class="star" data-rating="1" aria-label="Rate 1 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="2" aria-label="Rate 2 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="3" aria-label="Rate 3 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="4" aria-label="Rate 4 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="5" aria-label="Rate 5 out of 5" aria-pressed="false">&#9733;</button>
+            </div>
+            <p class="rating-status" id="rating-status" aria-live="polite"></p>
+          </div>
+          <div class="comments" id="comments" hidden>
+            <h3>Comments</h3>
+            <div id="comment-form-slot"></div>
+            <ul class="comment-list" id="comment-list"></ul>
+          </div>
+        </div>
+      </section>
 
       <section class="pathways" aria-labelledby="related-title">
         <div class="section-heading">
@@ -103,6 +135,7 @@
           <span>Herbal Stirred</span>
           <span>5 min</span>
           <span>Jewel-toned</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../bijou/">View recipe</a>
@@ -120,6 +153,7 @@
           <span>Floral Sour</span>
           <span>6 min</span>
           <span>Floral</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../aviation/">View recipe</a>
@@ -137,6 +171,7 @@
           <span>Niche Classic</span>
           <span>6 min</span>
           <span>Bracing</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../corpse-reviver-2/">View recipe</a>
@@ -154,6 +189,7 @@
           <span>Stirred Classic</span>
           <span>4 min</span>
           <span>Clean</span>
+          <span>Martini glass</span>
         </div>
         <div class="card-actions">
           <a href="../martini/">View recipe</a>
@@ -169,17 +205,21 @@
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="../../privacy.html">Privacy</a>
-        <a href="../../responsible-drinking.html">Responsible drinking</a>
+        <a href="../../recipes.html">Recipes</a>
         <a href="../../bar-guide.html">Bar Guide</a>
+        <a href="../../privacy.html">Privacy</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
 
-    <script src="../../data/recipes-data.js?v=20260829"></script>
+    <script src="../../data/recipes-data.js?v=20261006"></script>
     <script src="../../data/pantry-config.js?v=20260829"></script>
+    <script src="../../data/glassware.js?v=20261006"></script>
     <script src="../../data/recipe-helpers.js?v=20260829"></script>
-    <script src="../../script.js?v=20260829-better-card-tags"></script>
+    <script src="../../script.js?v=20261006-glassware"></script>
   </body>
 </html>

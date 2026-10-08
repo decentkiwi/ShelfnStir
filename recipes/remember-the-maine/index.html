@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Remember the Maine Recipe | Shelf&amp;Stir</title>
     <meta name="description" content="Rye, sweet vermouth, cherry liqueur, and absinthe, moody and precise. Full ingredients, method, and smart substitutions for the Remember the Maine." />
     <link rel="canonical" href="https://decentkiwi.github.io/ShelfnStir/recipes/remember-the-maine/" />
@@ -13,8 +14,8 @@
     <meta property="og:url" content="https://decentkiwi.github.io/ShelfnStir/recipes/remember-the-maine/" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../assets/favicon.png" />
-    <link rel="stylesheet" href="../../styles.css?v=20260829-mobile-polish" />
-    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Remember the Maine","description":"Rye, sweet vermouth, cherry liqueur, and absinthe, moody and precise.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-09-17","recipeCategory":"Rye Deep Cut","recipeCuisine":"Cocktail","keywords":"niche, stirred, whiskey, herbal","totalTime":"PT6M","recipeYield":"1 cocktail","recipeIngredient":["2 oz rye whiskey","3/4 oz sweet vermouth","1/2 oz cherry liqueur","Absinthe rinse"],"recipeInstructions":[{"@type":"HowToStep","text":"Rinse a coupe with absinthe."},{"@type":"HowToStep","text":"Stir rye, vermouth, and cherry liqueur with ice."},{"@type":"HowToStep","text":"Strain into the coupe."}]}</script>
+    <link rel="stylesheet" href="../../styles.css?v=20261006-glassware" />
+    <script type="application/ld+json">{"@context":"https://schema.org/","@type":"Recipe","name":"Remember the Maine","description":"Rye, sweet vermouth, cherry liqueur, and absinthe, moody and precise.","image":["https://decentkiwi.github.io/ShelfnStir/assets/citrus.jpg"],"author":{"@type":"Organization","name":"Shelf&Stir"},"datePublished":"2026-10-06","recipeCategory":"Rye Deep Cut","recipeCuisine":"Cocktail","keywords":"niche, stirred, whiskey, herbal","totalTime":"PT6M","recipeYield":"1 cocktail","recipeIngredient":["2 oz rye whiskey","3/4 oz sweet vermouth","1/2 oz cherry liqueur","Absinthe rinse"],"recipeInstructions":[{"@type":"HowToStep","text":"Rinse a coupe with absinthe."},{"@type":"HowToStep","text":"Stir rye, vermouth, and cherry liqueur with ice."},{"@type":"HowToStep","text":"Strain into the coupe."}]}</script>
   </head>
   <body data-recipe-id="remember-the-maine">
     <header class="site-header">
@@ -47,6 +48,7 @@
             <span>Rye Deep Cut</span>
             <span>6 min</span>
             <span>Dark</span>
+            <span>Coupe</span>
           </div>
 
           <div class="dialog-tools">
@@ -72,6 +74,7 @@
               <div id="dialog-substitutions" class="substitution-box">
                 <h4>Smart swaps</h4><p><strong>rye whiskey:</strong> Bourbon works when you want a rounder and sweeter version.</p>
               </div>
+              
             </div>
             <div>
               <h3>Method</h3>
@@ -80,10 +83,41 @@
                 <li>Stir rye, vermouth, and cherry liqueur with ice.</li>
                 <li>Strain into the coupe.</li>
               </ol>
+              <aside class="glass-note" aria-label="Recommended glass">
+                <svg class="glass-icon" viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 14c0 14 10 20 22 20s22-6 22-20Z"/><path d="M32 34v18M20 54h24"/></svg>
+                <div>
+                  <p class="eyebrow">Serve it in</p>
+                  <h4>Coupe</h4>
+                  <p>The stem keeps your hand from warming the drink, and the wide bowl lets aroma open up as you sip. Unlike a V-shaped martini glass it doesn&#039;t spill when you carry it.</p>
+                  <a href="../../bar-guide.html#glass-coupe">More about glassware</a>
+                </div>
+              </aside>
             </div>
           </div>
         </div>
       </article>
+
+      <section class="community" id="community" hidden aria-label="Ratings and comments">
+        <div class="community-inner">
+          <p class="rating-summary" id="rating-summary"></p>
+          <div class="rating-input" id="rating-input" hidden>
+            <h3>Rate this drink</h3>
+            <div class="rating-stars" role="group" aria-label="Rate this drink from 1 to 5 stars">
+              <button type="button" class="star" data-rating="1" aria-label="Rate 1 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="2" aria-label="Rate 2 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="3" aria-label="Rate 3 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="4" aria-label="Rate 4 out of 5" aria-pressed="false">&#9733;</button>
+              <button type="button" class="star" data-rating="5" aria-label="Rate 5 out of 5" aria-pressed="false">&#9733;</button>
+            </div>
+            <p class="rating-status" id="rating-status" aria-live="polite"></p>
+          </div>
+          <div class="comments" id="comments" hidden>
+            <h3>Comments</h3>
+            <div id="comment-form-slot"></div>
+            <ul class="comment-list" id="comment-list"></ul>
+          </div>
+        </div>
+      </section>
 
       <section class="pathways" aria-labelledby="related-title">
         <div class="section-heading">
@@ -103,6 +137,7 @@
           <span>New Orleans Classic</span>
           <span>7 min</span>
           <span>Potent</span>
+          <span>Rocks glass</span>
         </div>
         <div class="card-actions">
           <a href="../sazerac/">View recipe</a>
@@ -120,6 +155,7 @@
           <span>Herbal Stirred</span>
           <span>5 min</span>
           <span>Jewel-toned</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../bijou/">View recipe</a>
@@ -137,6 +173,7 @@
           <span>Whiskey Negroni</span>
           <span>5 min</span>
           <span>Rich</span>
+          <span>Rocks glass</span>
         </div>
         <div class="card-actions">
           <a href="../boulevardier/">View recipe</a>
@@ -154,6 +191,7 @@
           <span>Stirred Classic</span>
           <span>5 min</span>
           <span>Silky</span>
+          <span>Coupe</span>
         </div>
         <div class="card-actions">
           <a href="../manhattan/">View recipe</a>
@@ -169,17 +207,21 @@
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="../../privacy.html">Privacy</a>
-        <a href="../../responsible-drinking.html">Responsible drinking</a>
+        <a href="../../recipes.html">Recipes</a>
         <a href="../../bar-guide.html">Bar Guide</a>
+        <a href="../../privacy.html">Privacy</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
 
-    <script src="../../data/recipes-data.js?v=20260829"></script>
+    <script src="../../data/recipes-data.js?v=20261006"></script>
     <script src="../../data/pantry-config.js?v=20260829"></script>
+    <script src="../../data/glassware.js?v=20261006"></script>
     <script src="../../data/recipe-helpers.js?v=20260829"></script>
-    <script src="../../script.js?v=20260829-better-card-tags"></script>
+    <script src="../../script.js?v=20261006-glassware"></script>
   </body>
 </html>
