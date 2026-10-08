@@ -3,17 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>Responsible Drinking | Shelf&Stir</title>
     <meta
       name="description"
-      content="Shelf and Stir responsible drinking note for cocktail recipe readers."
+      content="Responsible drinking guidance from Shelf and Stir: legal age, pacing, driving, pregnancy, raw egg and allergen notes, and zero-proof options."
     />
     <meta property="og:title" content="Responsible Drinking | Shelf&Stir" />
-    <meta property="og:description" content="A brief note on enjoying cocktails responsibly." />
+    <meta property="og:description" content="Make good drinks and good decisions: our guidance on drinking responsibly at home." />
     <meta property="og:image" content="assets/og-image.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="assets/favicon.png" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20261006-glassware" />
   </head>
   <body>
     <header class="site-header">
@@ -29,14 +30,37 @@
     </header>
 
     <main id="top">
-      <section class="text-page" aria-labelledby="responsible-title">
+      <section class="text-page legal" aria-labelledby="rd-title">
         <p class="eyebrow">Responsible drinking</p>
-        <h1 id="responsible-title">Make good drinks and good decisions</h1>
+        <h1 id="rd-title">Make good drinks and good decisions</h1>
         <div class="text-stack">
-          <p>Shelf&Stir is intended for adults of legal drinking age.</p>
-          <p>Please enjoy cocktails responsibly, pace your drinks, eat food, drink water, and never drive after drinking.</p>
-          <p>Recipes are provided for informational and entertainment purposes. Adjust serving sizes thoughtfully and avoid serving alcohol to anyone who should not drink.</p>
-          <p>The zero-proof recipes are included for nights when you want the ritual of a cocktail without alcohol.</p>
+          <p>Shelf&amp;Stir is intended for adults of legal drinking age. Recipes are provided for information and entertainment, so please enjoy them thoughtfully.</p>
+
+          <h2>At the bar</h2>
+          <ul>
+            <li>Pace yourself, eat food, and drink water between cocktails.</li>
+            <li>Never drive or operate machinery after drinking. Plan a ride before you start.</li>
+            <li>Remember that one cocktail can hold more than one standard drink, especially spirit-forward ones like a Martini or Negroni.</li>
+            <li>Never serve alcohol to anyone under the legal drinking age, or to anyone who shouldn't drink.</li>
+          </ul>
+
+          <h2>Health</h2>
+          <ul>
+            <li>Alcohol isn't recommended during pregnancy or when breastfeeding.</li>
+            <li>Alcohol can interact with some medications and health conditions. Ask a doctor or pharmacist if you're unsure.</li>
+            <li>If alcohol is causing problems for you or someone you know, talk to a doctor or contact a local support service. You're not alone.</li>
+          </ul>
+
+          <h2>Eggs and allergens</h2>
+          <ul>
+            <li>Some drinks (like the Clover Club, Ramos Gin Fizz, and Whiskey Sour) use raw egg white. Raw or undercooked eggs may carry a risk of foodborne illness. Use fresh, pasteurized eggs, and skip them if you're pregnant, elderly, very young, or immunocompromised.</li>
+            <li>Recipes may include dairy, nuts (such as the almond orgeat in a Mai Tai), or other allergens. Always check each ingredient.</li>
+          </ul>
+
+          <h2>Zero-proof options</h2>
+          <p>Our zero-proof recipes are here for nights when you want the ritual of a cocktail without the alcohol. They're a great choice for anyone who isn't drinking, and for guests who would rather not.</p>
+
+          <p>See also our <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Policy</a>.</p>
         </div>
       </section>
     </main>
@@ -45,11 +69,14 @@
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="privacy.html">Privacy</a>
-        <a href="bar-guide.html">Bar Guide</a>
         <a href="recipes.html">Recipes</a>
+        <a href="bar-guide.html">Bar Guide</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
   </body>

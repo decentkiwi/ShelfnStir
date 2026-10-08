@@ -15,6 +15,8 @@ const FILES = [
   "recipes.html",
   "bar-guide.html",
   "privacy.html",
+  "terms.html",
+  "404.html",
   "responsible-drinking.html",
   "styles.css",
   "script.js",
