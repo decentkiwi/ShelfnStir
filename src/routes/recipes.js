@@ -1,5 +1,5 @@
 import { db } from "../db.js";
-import { json, jsonError } from "../respond.js";
+import { json, jsonError, PUBLIC_CACHE } from "../respond.js";
 import { buildRecipes } from "../../data/recipe-helpers.js";
 
 // Same shape as db/fetch-recipes.js, but that one runs at build time with
@@ -8,7 +8,7 @@ import { buildRecipes } from "../../data/recipe-helpers.js";
 async function fetchAllBlueprints(sql) {
   const rows = await sql`
     select
-      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path,
+      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path, r.glass,
       coalesce((select array_agg(tag) from recipe_tags t where t.recipe_id = r.id), '{}') as tags,
       coalesce((select array_agg(display_text order by position) from recipe_ingredients i where i.recipe_id = r.id), '{}') as ingredients,
       coalesce((select array_agg(instruction order by position) from recipe_method_steps m where m.recipe_id = r.id), '{}') as method,
@@ -28,6 +28,7 @@ async function fetchAllBlueprints(sql) {
     row.ingredients,
     row.required,
     row.method,
+    row.glass,
   ]);
 }
 
@@ -43,12 +44,13 @@ export async function listRecipes(request, env) {
       time: r.time,
       strength: r.strength,
       image: r.image,
+      glass: r.glass,
       tags: r.tags,
       flavorTags: r.flavorTags,
       effortTags: r.effortTags,
       required: r.required,
     })),
-  });
+  }, { headers: PUBLIC_CACHE });
 }
 
 export async function getRecipe(request, env, ctx, params) {
@@ -56,5 +58,5 @@ export async function getRecipe(request, env, ctx, params) {
   const recipes = buildRecipes(await fetchAllBlueprints(sql));
   const recipe = recipes.find((r) => r.id === params.recipeId);
   if (!recipe) return jsonError("Recipe not found", 404);
-  return json(recipe);
+  return json(recipe, { headers: PUBLIC_CACHE });
 }

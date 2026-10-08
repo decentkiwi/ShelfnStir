@@ -8,6 +8,20 @@ import { listIngredients } from "./routes/ingredients.js";
 import { jsonError } from "./respond.js";
 import { rateLimit } from "./ratelimit.js";
 
+// Largest legitimate body is a full pantry shelf (200 ids, a few KB).
+const MAX_BODY_BYTES = 32 * 1024;
+
+// Defense in depth on top of SameSite=Lax cookies: a state-changing request
+// that carries an Origin header must come from this site. Native apps send no
+// Origin header, so they pass; browsers always send one on cross-site writes.
+function rejectUnsafeWrite(request, url) {
+  if (request.method === "GET" || request.method === "HEAD") return null;
+  const origin = request.headers.get("Origin");
+  if (origin && origin !== url.origin) return jsonError("Cross-origin requests are not allowed", 403);
+  if (Number(request.headers.get("Content-Length") || 0) > MAX_BODY_BYTES) return jsonError("Request too large", 413);
+  return null;
+}
+
 const routes = [
   { method: "GET", pattern: /^\/api\/recipes$/, handler: listRecipes },
   { method: "GET", pattern: /^\/api\/ingredients$/, handler: listIngredients },
@@ -25,7 +39,7 @@ const routes = [
   { method: "GET", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/ratings$/, handler: getRatings },
   { method: "POST", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/ratings$/, handler: submitRating, limiter: "WRITE_LIMITER" },
   { method: "GET", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/comments$/, handler: listComments },
-  { method: "POST", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/comments$/, handler: postComment, limiter: "WRITE_LIMITER" },
+  { method: "POST", pattern: /^\/api\/recipes\/(?<recipeId>[a-z0-9-]+)\/comments$/, handler: postComment, limiter: "AUTH_LIMITER" },
 ];
 
 export default {
@@ -33,6 +47,8 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname.startsWith("/api/")) {
+      const rejected = rejectUnsafeWrite(request, url);
+      if (rejected) return rejected;
       for (const route of routes) {
         if (route.method !== request.method) continue;
         const match = url.pathname.match(route.pattern);

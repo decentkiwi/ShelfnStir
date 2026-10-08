@@ -1,5 +1,5 @@
 import { db } from "../db.js";
-import { json } from "../respond.js";
+import { json, PUBLIC_CACHE } from "../respond.js";
 
 // The ingredient catalog (name + category) for pantry-picker UIs. Presets,
 // substitution equivalents, and cost-tier classification are app config,
@@ -12,7 +12,8 @@ export async function listIngredients(request, env) {
     from ingredients
     order by category, id
   `;
-  return json({
-    ingredients: rows.map((r) => ({ id: r.id, category: r.category, isSelectable: r.is_selectable })),
-  });
+  return json(
+    { ingredients: rows.map((r) => ({ id: r.id, category: r.category, isSelectable: r.is_selectable })) },
+    { headers: PUBLIC_CACHE },
+  );
 }

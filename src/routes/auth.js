@@ -3,6 +3,13 @@ import { hashPassword, verifyPassword, issueSessionToken, sessionCookieHeader, c
 import { json, jsonError } from "../respond.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL_LENGTH = 254;
+const MAX_PASSWORD_LENGTH = 128;
+
+// A well-formed hash that matches nothing. Login verifies against it when the
+// email isn't registered, so "no such account" takes as long as "wrong
+// password" and response timing can't be used to discover who has an account.
+const DUMMY_HASH = `pbkdf2$100000$${"0".repeat(32)}$${"0".repeat(64)}`;
 
 function normalizeEmail(email) {
   return typeof email === "string" ? email.trim().toLowerCase() : "";
@@ -16,8 +23,9 @@ export async function handleSignup(request, env) {
   const password = typeof body.password === "string" ? body.password : "";
   const displayName = typeof body.displayName === "string" ? body.displayName.trim() : "";
 
-  if (!EMAIL_RE.test(email)) return jsonError("Enter a valid email address");
+  if (!EMAIL_RE.test(email) || email.length > MAX_EMAIL_LENGTH) return jsonError("Enter a valid email address");
   if (password.length < 8) return jsonError("Password must be at least 8 characters");
+  if (password.length > MAX_PASSWORD_LENGTH) return jsonError(`Password must be at most ${MAX_PASSWORD_LENGTH} characters`);
   if (!displayName || displayName.length > 40) return jsonError("Display name must be 1-40 characters");
 
   const sql = db(env);
@@ -45,9 +53,14 @@ export async function handleLogin(request, env) {
   const email = normalizeEmail(body.email);
   const password = typeof body.password === "string" ? body.password : "";
 
+  if (password.length > MAX_PASSWORD_LENGTH || email.length > MAX_EMAIL_LENGTH) {
+    return jsonError("Incorrect email or password", 401);
+  }
+
   const sql = db(env);
   const [user] = await sql`select id, email, password_hash, display_name from users where email = ${email}`;
-  if (!user || !(await verifyPassword(password, user.password_hash))) {
+  const passwordOk = await verifyPassword(password, user ? user.password_hash : DUMMY_HASH);
+  if (!user || !passwordOk) {
     return jsonError("Incorrect email or password", 401);
   }
 

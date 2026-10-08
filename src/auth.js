@@ -46,7 +46,12 @@ export async function verifyPassword(password, stored) {
   return timingSafeEqual(toHex(new Uint8Array(derivedBits)), hashHex);
 }
 
+// Refuse to run with a missing or weak signing secret instead of silently
+// signing sessions with an empty key.
 function jwtSecretKey(env) {
+  if (typeof env.JWT_SECRET !== "string" || env.JWT_SECRET.length < 32) {
+    throw new Error("JWT_SECRET must be set to at least 32 characters");
+  }
   return new TextEncoder().encode(env.JWT_SECRET);
 }
 
@@ -88,9 +93,10 @@ function readCookie(request, name) {
 export async function getSessionUser(request, env) {
   const token = readCookie(request, SESSION_COOKIE);
   if (!token) return null;
+  const key = jwtSecretKey(env);
   let userId;
   try {
-    const { payload } = await jwtVerify(token, jwtSecretKey(env));
+    const { payload } = await jwtVerify(token, key, { algorithms: ["HS256"] });
     userId = Number(payload.sub);
   } catch {
     return null;
