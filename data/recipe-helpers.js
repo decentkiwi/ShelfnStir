@@ -93,7 +93,7 @@
   }
 
   function buildRecipes(recipeBlueprints) {
-    const recipes = recipeBlueprints.map(([id, name, type, tags, time, strength, image, summary, ingredients, required, method]) => ({
+    const recipes = recipeBlueprints.map(([id, name, type, tags, time, strength, image, summary, ingredients, required, method, glass]) => ({
       id,
       name,
       type,
@@ -105,6 +105,7 @@
       ingredients,
       required,
       method,
+      glass,
     }));
     recipes.forEach((recipe) => {
       recipe.flavorTags = recipeFlavorTags(recipe);

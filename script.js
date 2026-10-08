@@ -2,6 +2,7 @@ const scriptUrl = document.currentScript ? document.currentScript.src : location
 const { recipeBlueprints, ingredientGroups } = window.ShelfStirData;
 const { presets, ingredientEquivalents, easyGrabIngredients: easyGrabList, pantryStaples: pantryStaplesList, specialtyIngredients: specialtyList } = window.ShelfStirPantryConfig;
 const { escapeHtml, scaleIngredient, buildRecipes } = window.ShelfStirHelpers;
+const { glassByKey } = window.ShelfStirGlassware;
 
 const recipes = buildRecipes(recipeBlueprints);
 const easyGrabIngredients = new Set(easyGrabList);
@@ -175,11 +176,19 @@ function expandedIngredients() {
   return expanded;
 }
 
+function glassName(recipe) {
+  return recipe.glass && glassByKey[recipe.glass] ? glassByKey[recipe.glass].name : "";
+}
+
+// "pina colada" should find "Piña Colada": compare without accents or case.
+function fold(text) {
+  return String(text).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 function recipeMatches(recipe, query) {
-  const haystack = [recipe.name, recipe.type, recipe.summary, ...recipe.tags, ...recipe.flavorTags, ...recipe.effortTags, ...recipe.ingredients, ...recipe.required]
-    .join(" ")
-    .toLowerCase();
-  return haystack.includes(query.trim().toLowerCase());
+  const haystack = [recipe.name, recipe.type, recipe.summary, glassName(recipe), ...recipe.tags, ...recipe.flavorTags, ...recipe.effortTags, ...recipe.ingredients, ...recipe.required]
+    .join(" ");
+  return fold(haystack).includes(fold(query.trim()));
 }
 
 function visibleRecipes() {
@@ -220,6 +229,7 @@ function renderRecipes() {
             <span>${escapeHtml(recipe.type)}</span>
             <span>${escapeHtml(recipe.time)}</span>
             <span>${escapeHtml(recipe.strength)}</span>
+            ${glassName(recipe) ? `<span>${escapeHtml(glassName(recipe))}</span>` : ""}
           </div>
           <div class="card-actions">
             <a href="${recipePath(recipe.id)}">View recipe</a>
@@ -678,8 +688,16 @@ function setAuthMode(mode) {
   authDialog.querySelector(".auth-submit").textContent = signup ? "Create account" : "Sign in";
   authDialog.querySelector(".auth-switch").textContent = signup ? "I already have an account" : "Create an account";
   authDialog.querySelector(".auth-name-field").hidden = !signup;
+  authDialog.querySelectorAll(".auth-signup-only").forEach((el) => {
+    el.hidden = !signup;
+  });
   authDialog.querySelector('input[name="password"]').autocomplete = signup ? "new-password" : "current-password";
   authDialog.querySelector(".auth-error").textContent = "";
+}
+
+// Legal pages sit at the site root; recipe pages are two levels deep.
+function legalPath(page) {
+  return location.pathname.includes("/recipes/") ? `../../${page}` : page;
 }
 
 function ensureAuthDialog() {
@@ -689,7 +707,7 @@ function ensureAuthDialog() {
   authDialog.setAttribute("aria-labelledby", "auth-title");
   authDialog.innerHTML = `
     <form class="auth-form" novalidate>
-      <button type="button" class="auth-close" aria-label="Close">x</button>
+      <button type="button" class="auth-close" aria-label="Close">&times;</button>
       <h2 id="auth-title">Sign in</h2>
       <p class="auth-note">Accounts are optional. Sign in to sync your favorites and shelf across devices and to leave comments.</p>
       <label class="auth-name-field" hidden>Display name
@@ -699,7 +717,12 @@ function ensureAuthDialog() {
         <input name="email" type="email" autocomplete="email" autofocus>
       </label>
       <label>Password
-        <input name="password" type="password" minlength="8" autocomplete="current-password">
+        <input name="password" type="password" minlength="8" maxlength="128" autocomplete="current-password">
+      </label>
+      <p class="auth-hint auth-signup-only" hidden>Use at least 8 characters.</p>
+      <label class="auth-consent auth-signup-only" hidden>
+        <input name="agree" type="checkbox">
+        <span>I'm of legal drinking age (and at least 18), and I agree to the <a href="${legalPath("terms.html")}" target="_blank" rel="noopener">Terms of Use</a> and <a href="${legalPath("privacy.html")}" target="_blank" rel="noopener">Privacy Policy</a>.</span>
       </label>
       <p class="auth-error" role="alert"></p>
       <button type="submit" class="auth-submit">Sign in</button>
@@ -735,6 +758,10 @@ async function submitAuth(event) {
   if (signup) payload.displayName = fields.get("displayName");
 
   errorEl.textContent = "";
+  if (signup && !fields.get("agree")) {
+    errorEl.textContent = "Please confirm your age and agree to the Terms and Privacy Policy to create an account.";
+    return;
+  }
   submit.disabled = true;
   try {
     const result = await api(signup ? "auth/signup" : "auth/login", { method: "POST", body: JSON.stringify(payload) });
@@ -780,7 +807,7 @@ function ensureDeleteAccountDialog() {
   deleteAccountDialog.setAttribute("aria-labelledby", "delete-account-title");
   deleteAccountDialog.innerHTML = `
     <form class="auth-form" novalidate>
-      <button type="button" class="auth-close" aria-label="Close">x</button>
+      <button type="button" class="auth-close" aria-label="Close">&times;</button>
       <h2 id="delete-account-title">Delete account</h2>
       <p class="auth-note">This permanently deletes your account, favorites, pantry shelf, and comments. This can't be undone.</p>
       <label>Confirm your password

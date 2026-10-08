@@ -33,15 +33,16 @@
     ],
     [
       "campari",
-      "sweet vermouth",
+      "orange",
       "soda water",
-      "orange"
+      "sweet vermouth"
     ],
     [
       "Build Campari and vermouth over ice.",
       "Top with soda.",
       "Garnish with orange."
-    ]
+    ],
+    "highball"
   ],
   [
     "aperol-spritz",
@@ -63,16 +64,17 @@
       "Orange slice"
     ],
     [
-      "prosecco",
       "aperol",
-      "soda water",
-      "orange"
+      "orange",
+      "prosecco",
+      "soda water"
     ],
     [
       "Build in a wine glass over ice.",
       "Add prosecco, Aperol, and soda.",
       "Stir gently and garnish with orange."
-    ]
+    ],
+    "wine"
   ],
   [
     "aviation",
@@ -95,16 +97,17 @@
       "1/4 oz creme de violette"
     ],
     [
+      "creme de violette",
       "gin",
       "lemon juice",
-      "maraschino liqueur",
-      "creme de violette"
+      "maraschino liqueur"
     ],
     [
       "Shake all ingredients with ice.",
       "Fine-strain into a chilled coupe.",
       "Garnish with a cherry."
-    ]
+    ],
+    "coupe"
   ],
   [
     "bee-knees",
@@ -126,14 +129,15 @@
     ],
     [
       "gin",
-      "lemon juice",
-      "honey syrup"
+      "honey syrup",
+      "lemon juice"
     ],
     [
       "Shake all ingredients with ice.",
       "Strain into a coupe.",
       "Garnish with lemon."
-    ]
+    ],
+    "coupe"
   ],
   [
     "bijou",
@@ -156,15 +160,16 @@
     ],
     [
       "gin",
-      "sweet vermouth",
       "green chartreuse",
-      "orange bitters"
+      "orange bitters",
+      "sweet vermouth"
     ],
     [
       "Stir with ice until chilled.",
       "Strain into a coupe.",
       "Garnish with lemon or cherry."
-    ]
+    ],
+    "coupe"
   ],
   [
     "boulevardier",
@@ -189,14 +194,15 @@
     [
       "bourbon",
       "campari",
-      "sweet vermouth",
-      "orange"
+      "orange",
+      "sweet vermouth"
     ],
     [
       "Stir all liquid ingredients with ice.",
       "Strain over a large cube.",
       "Garnish with orange peel."
-    ]
+    ],
+    "rocks"
   ],
   [
     "clover-club",
@@ -218,16 +224,17 @@
       "1 egg white"
     ],
     [
+      "egg",
       "gin",
       "lemon juice",
-      "raspberry syrup",
-      "egg"
+      "raspberry syrup"
     ],
     [
       "Dry shake ingredients without ice.",
       "Shake again with ice.",
       "Fine-strain into a coupe."
-    ]
+    ],
+    "coupe"
   ],
   [
     "corpse-reviver-2",
@@ -251,17 +258,18 @@
       "Absinthe rinse"
     ],
     [
+      "absinthe",
       "gin",
-      "lillet blanc",
-      "orange liqueur",
       "lemon juice",
-      "absinthe"
+      "lillet blanc",
+      "orange liqueur"
     ],
     [
       "Rinse a chilled coupe with absinthe.",
       "Shake remaining ingredients with ice.",
       "Strain into the coupe."
-    ]
+    ],
+    "coupe"
   ],
   [
     "cosmopolitan",
@@ -284,16 +292,17 @@
       "1/2 oz cranberry juice"
     ],
     [
-      "vodka",
-      "orange liqueur",
+      "cranberry juice",
       "lime juice",
-      "cranberry juice"
+      "orange liqueur",
+      "vodka"
     ],
     [
       "Shake all ingredients with ice.",
       "Fine-strain into a chilled coupe.",
       "Garnish with orange peel."
-    ]
+    ],
+    "coupe"
   ],
   [
     "daiquiri",
@@ -315,19 +324,20 @@
       "3/4 oz simple syrup"
     ],
     [
-      "white rum",
       "lime juice",
-      "simple syrup"
+      "simple syrup",
+      "white rum"
     ],
     [
       "Shake all ingredients hard with ice.",
       "Double-strain into a chilled coupe.",
       "Serve without garnish or add a lime wheel."
-    ]
+    ],
+    "coupe"
   ],
   [
     "dark-n-stormy",
-    "Dark 'n Stormy",
+    "Dark 'n' Stormy",
     "Rum Highball",
     [
       "classic",
@@ -345,14 +355,15 @@
     ],
     [
       "dark rum",
-      "lime juice",
-      "ginger beer"
+      "ginger beer",
+      "lime juice"
     ],
     [
       "Build lime and ginger beer over ice.",
       "Float dark rum on top.",
       "Garnish with lime."
-    ]
+    ],
+    "highball"
   ],
   [
     "division-bell",
@@ -374,16 +385,17 @@
       "1/2 oz maraschino liqueur"
     ],
     [
-      "mezcal",
       "aperol",
       "lime juice",
-      "maraschino liqueur"
+      "maraschino liqueur",
+      "mezcal"
     ],
     [
       "Shake everything with ice.",
       "Strain into a coupe.",
       "Garnish with grapefruit peel if available."
-    ]
+    ],
+    "coupe"
   ],
   [
     "eastside",
@@ -406,17 +418,18 @@
       "6 mint leaves"
     ],
     [
+      "cucumber",
       "gin",
       "lime juice",
-      "simple syrup",
-      "cucumber",
-      "mint"
+      "mint",
+      "simple syrup"
     ],
     [
       "Muddle cucumber and mint lightly.",
       "Shake with gin, lime, syrup, and ice.",
       "Fine-strain into a coupe."
-    ]
+    ],
+    "coupe"
   ],
   [
     "espresso-martini",
@@ -438,16 +451,17 @@
       "1/4 oz simple syrup"
     ],
     [
-      "vodka",
       "coffee liqueur",
       "espresso",
-      "simple syrup"
+      "simple syrup",
+      "vodka"
     ],
     [
       "Shake everything hard with ice.",
       "Fine-strain into a chilled coupe.",
       "Garnish with coffee beans if you have them."
-    ]
+    ],
+    "coupe"
   ],
   [
     "french-75",
@@ -479,7 +493,8 @@
       "Shake gin, lemon, and syrup with ice.",
       "Strain into a flute.",
       "Top with sparkling wine and garnish with lemon peel."
-    ]
+    ],
+    "flute"
   ],
   [
     "garden-spritz",
@@ -503,16 +518,17 @@
     ],
     [
       "cucumber",
-      "mint",
-      "lime juice",
       "honey syrup",
+      "lime juice",
+      "mint",
       "sparkling water"
     ],
     [
       "Gently muddle cucumber and mint with lime and honey.",
       "Add ice and sparkling water.",
       "Lift with a spoon and garnish with mint."
-    ]
+    ],
+    "wine"
   ],
   [
     "garibaldi",
@@ -540,7 +556,8 @@
       "Whip or shake orange juice to aerate.",
       "Build over ice with Campari.",
       "Stir gently."
-    ]
+    ],
+    "highball"
   ],
   [
     "ginger-tea-collins",
@@ -564,16 +581,17 @@
     ],
     [
       "black tea",
-      "lemon juice",
-      "honey syrup",
       "ginger",
+      "honey syrup",
+      "lemon juice",
       "soda water"
     ],
     [
       "Shake tea, lemon, honey, and ginger with ice.",
       "Strain into an iced Collins glass.",
       "Top with soda."
-    ]
+    ],
+    "collins"
   ],
   [
     "jungle-bird",
@@ -597,17 +615,18 @@
       "1/2 oz simple syrup"
     ],
     [
-      "dark rum",
-      "pineapple juice",
       "campari",
+      "dark rum",
       "lime juice",
+      "pineapple juice",
       "simple syrup"
     ],
     [
       "Shake with ice.",
       "Strain over crushed ice.",
       "Garnish with pineapple leaves if available."
-    ]
+    ],
+    "tiki"
   ],
   [
     "last-word",
@@ -632,14 +651,15 @@
     [
       "gin",
       "green chartreuse",
-      "maraschino liqueur",
-      "lime juice"
+      "lime juice",
+      "maraschino liqueur"
     ],
     [
       "Shake everything with ice.",
       "Fine-strain into a chilled coupe.",
       "Garnish with a cherry if desired."
-    ]
+    ],
+    "coupe"
   ],
   [
     "mai-tai",
@@ -671,7 +691,8 @@
       "Shake with crushed ice.",
       "Pour unstrained into a rocks glass.",
       "Garnish with mint and lime."
-    ]
+    ],
+    "rocks"
   ],
   [
     "manhattan",
@@ -693,16 +714,17 @@
       "Brandied cherry"
     ],
     [
-      "rye whiskey",
-      "sweet vermouth",
       "angostura bitters",
-      "cherry"
+      "cherry",
+      "rye whiskey",
+      "sweet vermouth"
     ],
     [
       "Stir whiskey, vermouth, and bitters with ice.",
       "Strain into a coupe.",
       "Garnish with a brandied cherry."
-    ]
+    ],
+    "coupe"
   ],
   [
     "margarita",
@@ -726,16 +748,17 @@
       "Salt, optional"
     ],
     [
+      "agave syrup",
       "blanco tequila",
       "lime juice",
-      "orange liqueur",
-      "agave syrup"
+      "orange liqueur"
     ],
     [
       "Shake tequila, lime, orange liqueur, and agave with ice.",
       "Strain into a salted rocks glass over fresh ice.",
       "Garnish with a lime wheel."
-    ]
+    ],
+    "rocks"
   ],
   [
     "martini",
@@ -757,15 +780,16 @@
       "Lemon twist or olive"
     ],
     [
-      "gin",
       "dry vermouth",
+      "gin",
       "lemon"
     ],
     [
       "Stir gin and vermouth with plenty of ice.",
       "Strain into a chilled cocktail glass.",
       "Garnish with lemon or an olive."
-    ]
+    ],
+    "martini"
   ],
   [
     "mojito",
@@ -789,17 +813,18 @@
       "Soda water"
     ],
     [
-      "white rum",
       "lime juice",
-      "simple syrup",
       "mint",
-      "soda water"
+      "simple syrup",
+      "soda water",
+      "white rum"
     ],
     [
       "Gently press mint with syrup and lime in a highball.",
       "Add rum, ice, and soda.",
       "Lift with a spoon and garnish with mint."
-    ]
+    ],
+    "highball"
   ],
   [
     "moscow-mule",
@@ -822,15 +847,16 @@
       "Mint or lime wedge"
     ],
     [
-      "vodka",
+      "ginger beer",
       "lime juice",
-      "ginger beer"
+      "vodka"
     ],
     [
       "Build vodka and lime over ice.",
       "Top with ginger beer.",
       "Stir once and garnish."
-    ]
+    ],
+    "copper-mug"
   ],
   [
     "naked-and-famous",
@@ -852,16 +878,17 @@
       "3/4 oz lime juice"
     ],
     [
-      "mezcal",
       "aperol",
-      "yellow chartreuse",
-      "lime juice"
+      "lime juice",
+      "mezcal",
+      "yellow chartreuse"
     ],
     [
       "Shake all ingredients with ice.",
       "Strain into a coupe.",
       "Serve ungarnished."
-    ]
+    ],
+    "coupe"
   ],
   [
     "negroni",
@@ -884,16 +911,17 @@
       "Orange peel"
     ],
     [
-      "gin",
       "campari",
-      "sweet vermouth",
-      "orange"
+      "gin",
+      "orange",
+      "sweet vermouth"
     ],
     [
       "Stir liquid ingredients with ice until chilled.",
       "Strain over one large cube.",
       "Express orange peel and garnish."
-    ]
+    ],
+    "rocks"
   ],
   [
     "no-groni",
@@ -916,17 +944,18 @@
       "Orange slice"
     ],
     [
-      "pomegranate juice",
-      "orange juice",
       "black tea",
-      "soda water",
-      "orange"
+      "orange",
+      "orange juice",
+      "pomegranate juice",
+      "soda water"
     ],
     [
       "Build juices and tea over ice.",
       "Top with soda.",
       "Garnish with orange."
-    ]
+    ],
+    "highball"
   ],
   [
     "oaxaca-old-fashioned",
@@ -950,17 +979,18 @@
       "Orange peel"
     ],
     [
-      "reposado tequila",
-      "mezcal",
       "agave syrup",
       "angostura bitters",
-      "orange"
+      "mezcal",
+      "orange",
+      "reposado tequila"
     ],
     [
       "Stir everything with ice.",
       "Strain over a large cube.",
       "Garnish with a flamed orange peel if desired."
-    ]
+    ],
+    "rocks"
   ],
   [
     "old-fashioned",
@@ -982,16 +1012,17 @@
       "Orange twist"
     ],
     [
-      "whiskey",
-      "simple syrup",
       "angostura bitters",
-      "orange"
+      "orange",
+      "simple syrup",
+      "whiskey"
     ],
     [
       "Combine syrup and bitters in a rocks glass.",
       "Add whiskey and ice, then stir until cold.",
       "Garnish with an orange twist."
-    ]
+    ],
+    "rocks"
   ],
   [
     "painkiller",
@@ -1014,17 +1045,18 @@
       "Nutmeg"
     ],
     [
-      "dark rum",
-      "pineapple juice",
-      "orange juice",
       "coconut cream",
-      "nutmeg"
+      "dark rum",
+      "nutmeg",
+      "orange juice",
+      "pineapple juice"
     ],
     [
       "Shake with ice.",
       "Pour over crushed ice.",
       "Grate nutmeg over the top."
-    ]
+    ],
+    "tiki"
   ],
   [
     "paloma",
@@ -1048,15 +1080,16 @@
     ],
     [
       "blanco tequila",
-      "lime juice",
       "grapefruit soda",
+      "lime juice",
       "salt"
     ],
     [
       "Build tequila, lime, and salt in a highball with ice.",
       "Top with grapefruit soda.",
       "Stir and garnish with grapefruit."
-    ]
+    ],
+    "highball"
   ],
   [
     "paper-plane",
@@ -1079,16 +1112,17 @@
       "3/4 oz lemon juice"
     ],
     [
-      "bourbon",
-      "aperol",
       "amaro",
+      "aperol",
+      "bourbon",
       "lemon juice"
     ],
     [
       "Shake all ingredients with ice.",
       "Strain into a coupe.",
       "Serve ungarnished."
-    ]
+    ],
+    "coupe"
   ],
   [
     "penicillin",
@@ -1107,24 +1141,25 @@
     [
       "2 oz blended Scotch",
       "3/4 oz lemon juice",
-      "3/4 oz honey ginger syrup",
+      "3/4 oz honey-ginger syrup",
       "1/4 oz smoky Scotch"
     ],
     [
-      "scotch",
-      "lemon juice",
+      "ginger",
       "honey syrup",
-      "ginger"
+      "lemon juice",
+      "scotch"
     ],
     [
-      "Shake blended Scotch, lemon, and honey ginger syrup.",
+      "Shake blended Scotch, lemon, and honey-ginger syrup.",
       "Strain over ice.",
       "Float smoky Scotch on top."
-    ]
+    ],
+    "rocks"
   ],
   [
     "pina-colada",
-    "Pina Colada",
+    "Piña Colada",
     "Tropical Classic",
     [
       "classic",
@@ -1143,16 +1178,17 @@
       "1/2 oz lime juice"
     ],
     [
-      "white rum",
-      "pineapple juice",
       "coconut cream",
-      "lime juice"
+      "lime juice",
+      "pineapple juice",
+      "white rum"
     ],
     [
       "Shake with pebble ice or blend briefly.",
       "Pour into a chilled glass.",
       "Garnish with pineapple or nutmeg."
-    ]
+    ],
+    "tiki"
   ],
   [
     "ramos-gin-fizz",
@@ -1179,20 +1215,21 @@
       "Soda water"
     ],
     [
+      "cream",
+      "egg",
       "gin",
       "lemon juice",
       "lime juice",
-      "simple syrup",
-      "cream",
-      "egg",
       "orange flower water",
+      "simple syrup",
       "soda water"
     ],
     [
       "Shake without ice, then with ice, until very frothy.",
       "Strain into a Collins glass.",
       "Top slowly with soda."
-    ]
+    ],
+    "collins"
   ],
   [
     "remember-the-maine",
@@ -1214,16 +1251,17 @@
       "Absinthe rinse"
     ],
     [
-      "rye whiskey",
-      "sweet vermouth",
+      "absinthe",
       "cherry liqueur",
-      "absinthe"
+      "rye whiskey",
+      "sweet vermouth"
     ],
     [
       "Rinse a coupe with absinthe.",
       "Stir rye, vermouth, and cherry liqueur with ice.",
       "Strain into the coupe."
-    ]
+    ],
+    "coupe"
   ],
   [
     "sazerac",
@@ -1247,17 +1285,18 @@
       "Lemon peel"
     ],
     [
-      "rye whiskey",
-      "simple syrup",
-      "peychauds bitters",
       "absinthe",
-      "lemon"
+      "lemon",
+      "peychauds bitters",
+      "rye whiskey",
+      "simple syrup"
     ],
     [
       "Rinse a chilled rocks glass with absinthe.",
       "Stir rye, syrup, and bitters with ice.",
       "Strain and express lemon peel."
-    ]
+    ],
+    "rocks"
   ],
   [
     "siesta",
@@ -1290,7 +1329,8 @@
       "Shake all ingredients with ice.",
       "Strain into a coupe.",
       "Garnish with grapefruit."
-    ]
+    ],
+    "coupe"
   ],
   [
     "southside",
@@ -1314,14 +1354,15 @@
     [
       "gin",
       "lime juice",
-      "simple syrup",
-      "mint"
+      "mint",
+      "simple syrup"
     ],
     [
       "Shake ingredients with ice.",
       "Fine-strain into a coupe.",
       "Garnish with mint."
-    ]
+    ],
+    "coupe"
   ],
   [
     "vesper",
@@ -1345,15 +1386,16 @@
     ],
     [
       "gin",
-      "vodka",
+      "lemon",
       "lillet blanc",
-      "lemon"
+      "vodka"
     ],
     [
       "Stir ingredients with ice until very cold.",
       "Strain into a chilled glass.",
       "Garnish with a lemon peel."
-    ]
+    ],
+    "martini"
   ],
   [
     "whiskey-sour",
@@ -1385,7 +1427,8 @@
       "Shake bourbon, lemon, syrup, and egg white without ice if using.",
       "Shake again with ice.",
       "Strain and dot the foam with bitters."
-    ]
+    ],
+    "rocks"
   ]
 ];
   const ingredientGroups = [

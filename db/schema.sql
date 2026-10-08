@@ -14,6 +14,10 @@ create table if not exists recipes (
   created_at timestamptz not null default now()
 );
 
+-- Serving glass (a key from data/glassware.js, e.g. 'coupe'). Added after the
+-- table existed, so it's an ALTER; seeded by db/migrate.js.
+alter table recipes add column if not exists glass text;
+
 create table if not exists recipe_tags (
   recipe_id text not null references recipes(id) on delete cascade,
   tag text not null,

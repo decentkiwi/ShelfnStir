@@ -9,6 +9,7 @@ const { Client } = require("pg");
 const { loadEnvLocal } = require("./db/env.js");
 const { fetchRecipeBlueprints, fetchIngredientGroups, fetchRatingSummaries } = require("./db/fetch-recipes.js");
 const { buildRecipes, escapeHtml } = require("./data/recipe-helpers.js");
+const { glassTypes, glassByKey } = require("./data/glassware.js");
 
 loadEnvLocal();
 
@@ -58,6 +59,93 @@ function relatedRecipes(recipe, count = 4) {
   return scored.slice(0, count).map((entry) => entry.candidate);
 }
 
+// Raw egg white is a food-safety issue worth flagging on the recipe itself.
+function eggNoteHtml(recipe) {
+  if (!recipe.ingredients.some((ingredient) => /\begg\b/i.test(ingredient))) return "";
+  return `<p class="safety-note"><strong>Contains raw egg white.</strong> Use fresh, pasteurized eggs, and skip it if you're pregnant, elderly, very young, or immunocompromised.</p>`;
+}
+
+function glassIconSvg(glass) {
+  return `<svg class="glass-icon" viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${glass.icon}</svg>`;
+}
+
+// "Serve it in" note on each recipe page: the glass, why it matters, and a
+// link into the Bar Guide's glassware section.
+function glassNoteHtml(recipe) {
+  const glass = glassByKey[recipe.glass];
+  if (!glass) return "";
+  return `<aside class="glass-note" aria-label="Recommended glass">
+                ${glassIconSvg(glass)}
+                <div>
+                  <p class="eyebrow">Serve it in</p>
+                  <h4>${escapeHtml(glass.name)}</h4>
+                  <p>${escapeHtml(glass.why)}</p>
+                  <a href="../../bar-guide.html#glass-${glass.key}">More about glassware</a>
+                </div>
+              </aside>`;
+}
+
+function glassGuideHtml() {
+  const byGlass = new Map(glassTypes.map((glass) => [glass.key, []]));
+  recipes.forEach((recipe) => byGlass.get(recipe.glass)?.push(recipe));
+  const ranked = [...glassTypes].sort((a, b) => byGlass.get(b.key).length - byGlass.get(a.key).length);
+  const trio = ranked.slice(0, 3);
+  const covered = trio.reduce((sum, glass) => sum + byGlass.get(glass.key).length, 0);
+  const names = trio.map((glass) => glass.name.toLowerCase());
+
+  const cards = glassTypes
+    .map((glass) => {
+      const drinks = byGlass.get(glass.key);
+      const links = drinks.map((r) => `<a href="recipes/${r.id}/">${escapeHtml(r.name)}</a>`).join(", ");
+      return `
+          <article class="glass-card" id="glass-${glass.key}">
+            <div class="glass-card-head">
+              ${glassIconSvg(glass)}
+              <div>
+                <h3>${escapeHtml(glass.name)}</h3>
+                <p class="glass-meta">${escapeHtml(glass.size)} &middot; ${escapeHtml(glass.shape)}</p>
+              </div>
+            </div>
+            <p class="glass-serves"><strong>Best for:</strong> ${escapeHtml(glass.serves)}.</p>
+            <p>${escapeHtml(glass.why)}</p>
+            <p class="glass-tip"><strong>Tip:</strong> ${escapeHtml(glass.tip)}</p>
+            ${drinks.length ? `<p class="glass-drinks"><strong>${drinks.length} drink${drinks.length === 1 ? "" : "s"} here:</strong> ${links}</p>` : ""}
+          </article>`;
+    })
+    .join("");
+
+  return `<section class="guide-section" id="glassware" aria-labelledby="glass-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Glassware</p>
+            <h2 id="glass-title">The right glass changes how a cocktail looks and tastes</h2>
+          </div>
+        </div>
+        <p class="glass-intro">
+          Glass shape controls temperature, carbonation, ice, and how much aroma reaches your nose, so it
+          shapes the drink as much as the recipe does. You don't need a full set. Start with a ${names[0]},
+          a ${names[1]}, and a ${names[2]}, which together serve ${covered} of our ${recipes.length} recipes.
+        </p>
+        <div class="glass-basics">
+          <div><h3>Chill what's served up</h3><p>Fill the glass with ice and water while you mix, or keep coupes in the freezer. A cold glass holds the drink at the temperature you shook it to.</p></div>
+          <div><h3>Match the pour to the glass</h3><p>A drink that fills about three-quarters of the glass looks right and carries without spilling. A small pour in a huge glass warms up fast.</p></div>
+          <div><h3>Rinse well</h3><p>Soap film flattens bubbles and collapses the foam on egg-white drinks. Rinse thoroughly and let glasses air dry.</p></div>
+        </div>
+        <div class="glass-grid">${cards}
+        </div>
+      </section>`;
+}
+
+function writeBarGuideGlassware() {
+  const file = path.join(ROOT, "bar-guide.html");
+  const html = fs.readFileSync(file, "utf8");
+  const pattern = /<!-- glassware:start[^>]*-->[\s\S]*?<!-- glassware:end -->/;
+  if (!pattern.test(html)) throw new Error("bar-guide.html is missing the glassware:start/end markers");
+  const block = `<!-- glassware:start (generated by build.js from data/glassware.js; do not edit by hand) -->\n      ${glassGuideHtml()}\n      <!-- glassware:end -->`;
+  fs.writeFileSync(file, html.replace(pattern, () => block));
+  console.log("Updated glassware section in bar-guide.html");
+}
+
 function recipeCardHtml(recipe) {
   return `
     <article class="recipe-card">
@@ -69,6 +157,7 @@ function recipeCardHtml(recipe) {
           <span>${escapeHtml(recipe.type)}</span>
           <span>${escapeHtml(recipe.time)}</span>
           <span>${escapeHtml(recipe.strength)}</span>
+          ${recipe.glass ? `<span>${escapeHtml(glassByKey[recipe.glass].name)}</span>` : ""}
         </div>
         <div class="card-actions">
           <a href="../${recipe.id}/">View recipe</a>
@@ -157,6 +246,7 @@ function recipePageHtml(recipe) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
     <link rel="canonical" href="${canonical}" />
@@ -167,7 +257,7 @@ function recipePageHtml(recipe) {
     <meta property="og:url" content="${canonical}" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../assets/favicon.png" />
-    <link rel="stylesheet" href="../../styles.css?v=20260829-mobile-polish" />
+    <link rel="stylesheet" href="../../styles.css?v=20261006-glassware" />
     <script type="application/ld+json">${recipeJsonLd(recipe)}</script>
   </head>
   <body data-recipe-id="${recipe.id}">
@@ -201,6 +291,7 @@ function recipePageHtml(recipe) {
             <span>${escapeHtml(recipe.type)}</span>
             <span>${escapeHtml(recipe.time)}</span>
             <span>${escapeHtml(recipe.strength)}</span>
+            ${recipe.glass ? `<span>${escapeHtml(glassByKey[recipe.glass].name)}</span>` : ""}
           </div>
 
           <div class="dialog-tools">
@@ -220,21 +311,23 @@ function recipePageHtml(recipe) {
               <ul id="dialog-ingredients">
                 ${recipe.ingredients.map((ingredient) => `<li>${escapeHtml(ingredient)}</li>`).join("\n                ")}
               </ul>
-              <div id="dialog-substitutions" class="substitution-box">
-                ${
-                  recipe.substitutions.length
-                    ? `<h4>Smart swaps</h4>${recipe.substitutions
-                        .map((swap) => `<p><strong>${escapeHtml(swap.ingredient)}:</strong> ${escapeHtml(swap.note)}</p>`)
-                        .join("")}`
-                    : ""
-                }
-              </div>
+              ${
+                recipe.substitutions.length
+                  ? `<div id="dialog-substitutions" class="substitution-box">
+                <h4>Smart swaps</h4>${recipe.substitutions
+                  .map((swap) => `<p><strong>${escapeHtml(swap.ingredient)}:</strong> ${escapeHtml(swap.note)}</p>`)
+                  .join("")}
+              </div>`
+                  : ""
+              }
+              ${eggNoteHtml(recipe)}
             </div>
             <div>
               <h3>Method</h3>
               <ol id="dialog-method">
                 ${recipe.method.map((step) => `<li>${escapeHtml(step)}</li>`).join("\n                ")}
               </ol>
+              ${glassNoteHtml(recipe)}
             </div>
           </div>
         </div>
@@ -263,18 +356,22 @@ function recipePageHtml(recipe) {
       <div>
         <strong>Shelf&Stir</strong>
         <p>Find cocktails from what you already have at home.</p>
+        <p class="footer-note">For adults of legal drinking age. Please drink responsibly.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="../../privacy.html">Privacy</a>
-        <a href="../../responsible-drinking.html">Responsible drinking</a>
+        <a href="../../recipes.html">Recipes</a>
         <a href="../../bar-guide.html">Bar Guide</a>
+        <a href="../../privacy.html">Privacy</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../responsible-drinking.html">Responsible drinking</a>
       </nav>
     </footer>
 
-    <script src="../../data/recipes-data.js?v=20260829"></script>
+    <script src="../../data/recipes-data.js?v=20261006"></script>
     <script src="../../data/pantry-config.js?v=20260829"></script>
+    <script src="../../data/glassware.js?v=20261006"></script>
     <script src="../../data/recipe-helpers.js?v=20260829"></script>
-    <script src="../../script.js?v=20260829-better-card-tags"></script>
+    <script src="../../script.js?v=20261006-glassware"></script>
   </body>
 </html>
 `;
@@ -292,7 +389,7 @@ function writeRecipePages() {
 }
 
 function writeSitemap() {
-  const staticPages = ["", "recipes.html", "bar-guide.html", "privacy.html", "responsible-drinking.html"];
+  const staticPages = ["", "recipes.html", "bar-guide.html", "privacy.html", "terms.html", "responsible-drinking.html"];
   const urls = [
     ...staticPages.map((page) => `${BASE_URL}${page}`),
     ...recipes.map((recipe) => `${BASE_URL}recipes/${recipe.id}/`),
@@ -334,6 +431,7 @@ async function main() {
   recipes = buildRecipes(recipeBlueprints);
 
   writeRecipePages();
+  writeBarGuideGlassware();
   writeSitemap();
   writeRobots();
 }

@@ -15,7 +15,7 @@ const CATEGORY_ORDER = ["spirits", "liqueurs", "produce", "mixers", "pantry"];
 async function fetchRecipeBlueprints(client) {
   const { rows } = await client.query(`
     select
-      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path,
+      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path, r.glass,
       coalesce((select array_agg(tag) from recipe_tags t where t.recipe_id = r.id), '{}') as tags,
       coalesce((select array_agg(display_text order by position) from recipe_ingredients i where i.recipe_id = r.id), '{}') as ingredients,
       coalesce((select array_agg(instruction order by position) from recipe_method_steps m where m.recipe_id = r.id), '{}') as method,
@@ -36,6 +36,7 @@ async function fetchRecipeBlueprints(client) {
     row.ingredients,
     row.required,
     row.method,
+    row.glass,
   ]);
 }
 
