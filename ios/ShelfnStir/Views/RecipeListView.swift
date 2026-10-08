@@ -6,10 +6,14 @@ struct RecipeListView: View {
   private var filtered: [RecipeSummary] {
     let appState = environmentState
     guard !appState.recipeSearch.isEmpty else { return appState.recipes }
-    let query = appState.recipeSearch.lowercased()
+    // Compare without accents or case, so "pina" finds "Piña Colada".
+    func fold(_ text: String) -> String {
+      text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+    }
+    let query = fold(appState.recipeSearch)
     return appState.recipes.filter { recipe in
-      recipe.name.lowercased().contains(query)
-        || recipe.type.lowercased().contains(query)
+      fold(recipe.name).contains(query)
+        || fold(recipe.type).contains(query)
         || recipe.tags.contains { $0.contains(query) }
         || recipe.flavorTags.contains { $0.contains(query) }
         || recipe.effortTags.contains { $0.contains(query) }

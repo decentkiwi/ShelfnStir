@@ -6,14 +6,20 @@ struct AccountView: View {
 
   var body: some View {
     ScrollView {
-      Group {
-        if let user = appState.currentUser {
-          signedInView(user: user)
-        } else {
-          AuthForm()
+      VStack(spacing: 0) {
+        Group {
+          if let user = appState.currentUser {
+            signedInView(user: user)
+          } else {
+            AuthForm()
+          }
         }
+        .padding(16)
+
+        LegalLinks()
+          .padding(.horizontal, 16)
+          .padding(.bottom, 24)
       }
-      .padding(16)
     }
     .background(Color.brandPaper)
     .brandHeader("Account")
@@ -113,7 +119,7 @@ private struct DeleteAccountSheet: View {
   var body: some View {
     NavigationStack {
       VStack(alignment: .leading, spacing: 16) {
-        Text("This permanently deletes your account, favorites, and pantry shelf. This can't be undone.")
+        Text("This permanently deletes your account, favorites, pantry shelf, and comments. This can't be undone.")
           .font(.subheadline)
           .foregroundStyle(Color.brandMuted)
 
@@ -210,10 +216,15 @@ private struct AuthForm: View {
   @State private var email = ""
   @State private var password = ""
   @State private var displayName = ""
+  @State private var agreed = false
   @State private var errorMessage: String?
   @State private var isSubmitting = false
 
   private enum Mode { case login, signup }
+
+  private var canSubmit: Bool {
+    !(isSubmitting || email.isEmpty || password.isEmpty || (mode == .signup && (displayName.isEmpty || !agreed)))
+  }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 16) {
@@ -240,6 +251,18 @@ private struct AuthForm: View {
       BrandField(placeholder: "Password", text: $password, isSecure: true)
         .textContentType(mode == .signup ? .newPassword : .password)
 
+      if mode == .signup {
+        Text("Use at least 8 characters.")
+          .font(.caption)
+          .foregroundStyle(Color.brandMuted)
+        Toggle(isOn: $agreed) {
+          Text("I'm of legal drinking age (and at least 18), and I agree to the [Terms of Use](\(SiteLinks.terms)) and [Privacy Policy](\(SiteLinks.privacy)).")
+            .font(.footnote)
+            .foregroundStyle(Color.brandMuted)
+        }
+        .tint(Color.brandTeal)
+      }
+
       if let errorMessage {
         Text(errorMessage).foregroundStyle(Color.brandOxblood).font(.footnote)
       }
@@ -261,8 +284,8 @@ private struct AuthForm: View {
       .buttonStyle(PressableButtonStyle())
       .foregroundStyle(Color.brandChalk)
       .background(Color.brandInk, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-      .disabled(isSubmitting || email.isEmpty || password.isEmpty || (mode == .signup && displayName.isEmpty))
-      .opacity(isSubmitting || email.isEmpty || password.isEmpty || (mode == .signup && displayName.isEmpty) ? 0.5 : 1)
+      .disabled(!canSubmit)
+      .opacity(canSubmit ? 1 : 0.5)
     }
     .padding(16)
     .frame(maxWidth: .infinity, alignment: .leading)
@@ -284,5 +307,31 @@ private struct AuthForm: View {
       }
       isSubmitting = false
     }
+  }
+}
+
+enum SiteLinks {
+  static let privacy = "https://decentkiwi.github.io/ShelfnStir/privacy.html"
+  static let terms = "https://decentkiwi.github.io/ShelfnStir/terms.html"
+  static let responsibleDrinking = "https://decentkiwi.github.io/ShelfnStir/responsible-drinking.html"
+}
+
+// App Store Review expects an in-app privacy policy link; Terms and
+// responsible-drinking guidance sit next to it.
+private struct LegalLinks: View {
+  var body: some View {
+    VStack(spacing: 8) {
+      HStack(spacing: 18) {
+        Link("Privacy Policy", destination: URL(string: SiteLinks.privacy)!)
+        Link("Terms of Use", destination: URL(string: SiteLinks.terms)!)
+        Link("Drink responsibly", destination: URL(string: SiteLinks.responsibleDrinking)!)
+      }
+      .font(.footnote.weight(.semibold))
+      .tint(Color.brandTeal)
+      Text("For adults of legal drinking age.")
+        .font(.caption)
+        .foregroundStyle(Color.brandMuted)
+    }
+    .frame(maxWidth: .infinity)
   }
 }
