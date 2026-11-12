@@ -18,7 +18,8 @@ struct RecipeSummary: Codable, Identifiable, Hashable {
 }
 
 // Matches GET /api/recipes/:id -- the summary fields plus ingredients,
-// method, and substitutions.
+// method, substitutions, and the editorial notes. The notes are optional so
+// the app keeps working against an API version that predates them.
 struct RecipeDetail: Codable, Identifiable, Hashable {
   let id: String
   let name: String
@@ -34,6 +35,14 @@ struct RecipeDetail: Codable, Identifiable, Hashable {
   let ingredients: [String]
   let method: [String]
   let substitutions: [Substitution]
+  let glassInfo: GlassInfo?
+  let about: String?
+  let variations: [String]?
+}
+
+struct GlassInfo: Codable, Hashable {
+  let name: String
+  let why: String
 }
 
 struct Substitution: Codable, Hashable {

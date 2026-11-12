@@ -1,6 +1,7 @@
 import { db } from "../db.js";
 import { json, jsonError, PUBLIC_CACHE } from "../respond.js";
 import { buildRecipes } from "../../data/recipe-helpers.js";
+import { glassByKey } from "../../data/glassware.js";
 
 // Same shape as db/fetch-recipes.js, but that one runs at build time with
 // the `pg` client; this runs on the Worker with Neon's HTTP driver, so the
@@ -8,7 +9,7 @@ import { buildRecipes } from "../../data/recipe-helpers.js";
 async function fetchAllBlueprints(sql) {
   const rows = await sql`
     select
-      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path, r.glass,
+      r.id, r.name, r.type, r.summary, r.time_minutes, r.strength, r.image_path, r.glass, r.about, r.variations,
       coalesce((select array_agg(tag) from recipe_tags t where t.recipe_id = r.id), '{}') as tags,
       coalesce((select array_agg(display_text order by position) from recipe_ingredients i where i.recipe_id = r.id), '{}') as ingredients,
       coalesce((select array_agg(instruction order by position) from recipe_method_steps m where m.recipe_id = r.id), '{}') as method,
@@ -29,6 +30,8 @@ async function fetchAllBlueprints(sql) {
     row.required,
     row.method,
     row.glass,
+    row.about,
+    row.variations,
   ]);
 }
 
@@ -58,5 +61,9 @@ export async function getRecipe(request, env, ctx, params) {
   const recipes = buildRecipes(await fetchAllBlueprints(sql));
   const recipe = recipes.find((r) => r.id === params.recipeId);
   if (!recipe) return jsonError("Recipe not found", 404);
-  return json(recipe, { headers: PUBLIC_CACHE });
+  // Clients other than the website (the iOS app) don't ship the glassware
+  // guide, so send the name and reason along with the recipe.
+  const glass = glassByKey[recipe.glass];
+  const glassInfo = glass ? { name: glass.name, why: glass.why } : null;
+  return json({ ...recipe, glassInfo }, { headers: PUBLIC_CACHE });
 }

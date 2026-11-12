@@ -110,6 +110,17 @@ struct RecipeDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .cardBackground()
 
+        if let glass = recipe.glassInfo {
+          VStack(alignment: .leading, spacing: 6) {
+            Eyebrow(text: "Serve it in", color: .brandTeal)
+            Text(glass.name).font(.display(18)).foregroundStyle(Color.brandInk)
+            Text(glass.why).font(.subheadline).foregroundStyle(Color.brandMuted)
+          }
+          .padding(16)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .cardBackground()
+        }
+
         if !recipe.substitutions.isEmpty {
           VStack(alignment: .leading, spacing: 10) {
             Eyebrow(text: "Smart swaps", color: .brandGold)
@@ -126,9 +137,44 @@ struct RecipeDetailView: View {
           .frame(maxWidth: .infinity, alignment: .leading)
           .cardBackground(Color.brandGold.opacity(0.1))
         }
+
+        if let about = recipe.about, !about.isEmpty {
+          VStack(alignment: .leading, spacing: 10) {
+            Eyebrow(text: "About the \(recipe.name)")
+            Text(about).foregroundStyle(Color.brandInk)
+          }
+          .padding(16)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .cardBackground()
+        }
+
+        if let variations = recipe.variations, !variations.isEmpty {
+          VStack(alignment: .leading, spacing: 10) {
+            Eyebrow(text: "Variations")
+            VStack(alignment: .leading, spacing: 12) {
+              ForEach(variations, id: \.self) { variation in
+                variationText(variation)
+              }
+            }
+          }
+          .padding(16)
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .cardBackground()
+        }
       }
       .padding(16)
     }
     .background(Color.brandPaper)
+  }
+
+  // Variations are stored as "Name: what to change"; bold the name.
+  private func variationText(_ variation: String) -> Text {
+    guard let range = variation.range(of: ": ") else {
+      return Text(variation).foregroundStyle(Color.brandInk)
+    }
+    let label = String(variation[..<range.lowerBound])
+    let detail = String(variation[range.upperBound...])
+    return Text(label).bold().foregroundStyle(Color.brandInk)
+      + Text(": " + detail).foregroundStyle(Color.brandMuted)
   }
 }

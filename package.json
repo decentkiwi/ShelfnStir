@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Shelf&Stir cocktail recipe site: static build + Postgres-backed API",
   "scripts": {
+    "test": "node --test test/",
     "migrate": "node db/migrate.js",
     "build": "node build.js",
     "stage": "node scripts/stage.js"

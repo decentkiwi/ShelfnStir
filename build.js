@@ -20,6 +20,11 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 let recipes;
 let ratingSummaries = new Map();
 
+// The browser only needs the fields up to `glass`. The about/variations text
+// is rendered into each static recipe page, so shipping it again in the data
+// file every page loads would just add weight.
+const CLIENT_BLUEPRINT_FIELDS = 12;
+
 function writeGeneratedRecipesData(recipeBlueprints, ingredientGroups) {
   const contents = `// GENERATED FILE -- do not edit by hand.
 // Source of truth is Postgres (see db/schema.sql). To change recipe content,
@@ -33,7 +38,7 @@ function writeGeneratedRecipesData(recipeBlueprints, ingredientGroups) {
     root.ShelfStirData = data;
   }
 })(typeof self !== "undefined" ? self : this, function () {
-  const recipeBlueprints = ${JSON.stringify(recipeBlueprints, null, 2)};
+  const recipeBlueprints = ${JSON.stringify(recipeBlueprints.map((blueprint) => blueprint.slice(0, CLIENT_BLUEPRINT_FIELDS)), null, 2)};
   const ingredientGroups = ${JSON.stringify(ingredientGroups, null, 2)};
   return { recipeBlueprints, ingredientGroups };
 });
@@ -63,6 +68,25 @@ function relatedRecipes(recipe, count = 4) {
 function eggNoteHtml(recipe) {
   if (!recipe.ingredients.some((ingredient) => /\begg\b/i.test(ingredient))) return "";
   return `<p class="safety-note"><strong>Contains raw egg white.</strong> Use fresh, pasteurized eggs, and skip it if you're pregnant, elderly, very young, or immunocompromised.</p>`;
+}
+
+function recipeNotesHtml(recipe) {
+  if (!recipe.about && !recipe.variations.length) return "";
+  return `<div class="recipe-notes">
+            ${recipe.about ? `<div>
+              <h3>About the ${escapeHtml(recipe.name)}</h3>
+              <p>${escapeHtml(recipe.about)}</p>
+            </div>` : ""}
+            ${recipe.variations.length ? `<div>
+              <h3>Variations</h3>
+              <ul>
+                ${recipe.variations.map((variation) => {
+                  const [label, ...rest] = variation.split(": ");
+                  return rest.length ? `<li><strong>${escapeHtml(label)}:</strong> ${escapeHtml(rest.join(": "))}</li>` : `<li>${escapeHtml(variation)}</li>`;
+                }).join("\n                ")}
+              </ul>
+            </div>` : ""}
+          </div>`;
 }
 
 function glassIconSvg(glass) {
@@ -257,7 +281,7 @@ function recipePageHtml(recipe) {
     <meta property="og:url" content="${canonical}" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="../../assets/favicon.png" />
-    <link rel="stylesheet" href="../../styles.css?v=20261006-glassware" />
+    <link rel="stylesheet" href="../../styles.css?v=20261111" />
     <script type="application/ld+json">${recipeJsonLd(recipe)}</script>
   </head>
   <body data-recipe-id="${recipe.id}">
@@ -330,6 +354,8 @@ function recipePageHtml(recipe) {
               ${glassNoteHtml(recipe)}
             </div>
           </div>
+
+          ${recipeNotesHtml(recipe)}
         </div>
       </article>
 
@@ -370,8 +396,8 @@ function recipePageHtml(recipe) {
     <script src="../../data/recipes-data.js?v=20261006"></script>
     <script src="../../data/pantry-config.js?v=20260829"></script>
     <script src="../../data/glassware.js?v=20261006"></script>
-    <script src="../../data/recipe-helpers.js?v=20260829"></script>
-    <script src="../../script.js?v=20261006-glassware"></script>
+    <script src="../../data/recipe-helpers.js?v=20261111"></script>
+    <script src="../../script.js?v=20261111"></script>
   </body>
 </html>
 `;

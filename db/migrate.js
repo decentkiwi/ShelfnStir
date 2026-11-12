@@ -12,6 +12,7 @@ loadEnvLocal();
 const { recipeBlueprints, ingredientGroups } = require("../data/recipes-data.js");
 const { ingredientEquivalents } = require("../data/pantry-config.js");
 const { glassByKey, recipeGlass } = require("../data/glassware.js");
+const recipeNotes = require("./recipe-notes.js");
 
 function categoryOf(ingredientGroups, name) {
   const group = ingredientGroups.find((g) => g.items.includes(name));
@@ -84,9 +85,14 @@ async function main() {
         throw new Error(`Recipe "${id}" has no valid glass (got "${glass}"); add it to recipeGlass in data/glassware.js`);
       }
 
+      const notes = recipeNotes[id];
+      if (!notes || !notes.about || !Array.isArray(notes.variations)) {
+        throw new Error(`Recipe "${id}" has no notes; add it to db/recipe-notes.js`);
+      }
+
       await client.query(
-        `insert into recipes (id, name, type, summary, time_minutes, strength, image_path, glass)
-         values ($1, $2, $3, $4, $5, $6, $7, $8)
+        `insert into recipes (id, name, type, summary, time_minutes, strength, image_path, glass, about, variations)
+         values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
          on conflict (id) do update set
            name = excluded.name,
            type = excluded.type,
@@ -94,8 +100,10 @@ async function main() {
            time_minutes = excluded.time_minutes,
            strength = excluded.strength,
            image_path = excluded.image_path,
-           glass = excluded.glass`,
-        [id, name, type, summary, timeMinutes, strength, image, glass],
+           glass = excluded.glass,
+           about = excluded.about,
+           variations = excluded.variations`,
+        [id, name, type, summary, timeMinutes, strength, image, glass, notes.about, notes.variations],
       );
 
       await client.query("delete from recipe_tags where recipe_id = $1", [id]);

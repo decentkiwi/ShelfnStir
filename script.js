@@ -1,7 +1,8 @@
 const scriptUrl = document.currentScript ? document.currentScript.src : location.href;
 const { recipeBlueprints, ingredientGroups } = window.ShelfStirData;
 const { presets, ingredientEquivalents, easyGrabIngredients: easyGrabList, pantryStaples: pantryStaplesList, specialtyIngredients: specialtyList } = window.ShelfStirPantryConfig;
-const { escapeHtml, scaleIngredient, buildRecipes } = window.ShelfStirHelpers;
+const pantryConfig = window.ShelfStirPantryConfig;
+const { escapeHtml, scaleIngredient, buildRecipes, recipeMatchesQuery, recipeMatchesFilter, pantryMatches: rankPantryMatches, bestNextBuys } = window.ShelfStirHelpers;
 const { glassByKey } = window.ShelfStirGlassware;
 
 const recipes = buildRecipes(recipeBlueprints);
@@ -168,39 +169,13 @@ function toggleFavorite(id) {
   updateDialogFavorite();
 }
 
-function expandedIngredients() {
-  const expanded = new Set(selectedIngredients);
-  selectedIngredients.forEach((ingredient) => {
-    (ingredientEquivalents[ingredient] || []).forEach((equivalent) => expanded.add(equivalent));
-  });
-  return expanded;
-}
-
 function glassName(recipe) {
   return recipe.glass && glassByKey[recipe.glass] ? glassByKey[recipe.glass].name : "";
 }
 
-// "pina colada" should find "Piña Colada": compare without accents or case.
-function fold(text) {
-  return String(text).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-}
-
-function recipeMatches(recipe, query) {
-  const haystack = [recipe.name, recipe.type, recipe.summary, glassName(recipe), ...recipe.tags, ...recipe.flavorTags, ...recipe.effortTags, ...recipe.ingredients, ...recipe.required]
-    .join(" ");
-  return fold(haystack).includes(fold(query.trim()));
-}
-
 function visibleRecipes() {
-  return recipes.filter((recipe) => {
-    const matchesFilter =
-      activeFilter === "all" ||
-      recipe.tags.includes(activeFilter) ||
-      recipe.flavorTags.includes(activeFilter) ||
-      recipe.effortTags.includes(activeFilter) ||
-      (activeFilter === "favorites" && favoriteRecipes.has(recipe.id));
-    return matchesFilter && recipeMatches(recipe, search ? search.value : "");
-  });
+  const query = search ? search.value : "";
+  return recipes.filter((recipe) => recipeMatchesFilter(recipe, activeFilter, favoriteRecipes) && recipeMatchesQuery(recipe, query, glassName(recipe)));
 }
 
 function renderRecipes() {
@@ -274,30 +249,8 @@ function formatDisplayTag(tag) {
   return labels[tag] || tag.charAt(0).toUpperCase() + tag.slice(1);
 }
 
-function recipeMatch(recipe) {
-  const availableIngredients = expandedIngredients();
-  const missing = recipe.required.filter((ingredient) => !availableIngredients.has(ingredient));
-  const shoppingPain = missing.reduce((total, ingredient) => total + ingredientCost(ingredient), 0);
-  return {
-    ...recipe,
-    missing,
-    shoppingPain,
-    score: recipe.required.length ? (recipe.required.length - missing.length) / recipe.required.length : 0,
-  };
-}
-
 function pantryMatches() {
-  return recipes
-    .map(recipeMatch)
-    .filter((recipe) => recipe.missing.length <= 2)
-    .sort((a, b) => a.missing.length - b.missing.length || a.shoppingPain - b.shoppingPain || b.score - a.score || a.name.localeCompare(b.name));
-}
-
-function ingredientCost(ingredient) {
-  if (specialtyIngredients.has(ingredient)) return 4;
-  if (pantryStaples.has(ingredient)) return 2;
-  if (easyGrabIngredients.has(ingredient)) return 1;
-  return 3;
+  return rankPantryMatches(recipes, selectedIngredients, pantryConfig);
 }
 
 function ingredientLabel(ingredient) {
@@ -401,20 +354,7 @@ function renderMatches() {
 function renderShoppingInsights(matches = pantryMatches()) {
   if (!shoppingInsights) return;
   if (!selectedIngredients.size) return;
-  const unlocks = new Map();
-  matches
-    .filter((recipe) => recipe.missing.length === 1)
-    .forEach((recipe) => {
-      const ingredient = recipe.missing[0];
-      if (selectedIngredients.has(ingredient)) return;
-      if (!unlocks.has(ingredient)) unlocks.set(ingredient, []);
-      unlocks.get(ingredient).push(recipe.name);
-    });
-
-  const ranked = [...unlocks.entries()]
-    .map(([ingredient, names]) => ({ ingredient, names, cost: ingredientCost(ingredient) }))
-    .sort((a, b) => b.names.length - a.names.length || a.cost - b.cost || a.ingredient.localeCompare(b.ingredient))
-    .slice(0, 3);
+  const ranked = bestNextBuys(matches, selectedIngredients, pantryConfig);
 
   if (!ranked.length) {
     shoppingInsights.innerHTML = `<p>Your current shelf has no single-ingredient unlocks. Add one versatile spirit, citrus, or sweetener to widen the map.</p>`;

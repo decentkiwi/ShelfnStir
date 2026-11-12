@@ -58,12 +58,18 @@
     return [...flavors];
   }
 
+  function needsShaker(recipe) {
+    return /\bshak(e|en|ing)\b/i.test([recipe.summary, ...recipe.method].join(" "));
+  }
+
   function recipeEffortTags(recipe) {
     const tags = new Set();
     const requiredCount = recipe.required.length;
     const minutes = Number.parseInt(recipe.time, 10);
     if (requiredCount <= 4 && minutes <= 6) tags.add("easy");
-    if (!recipe.tags.includes("shaken") && !recipe.summary.toLowerCase().includes("shake")) tags.add("no-shaker");
+    // Judged from the method itself: the "shaken" tag is only set on a few
+    // recipes, so relying on it mislabeled most shaken drinks.
+    if (!needsShaker(recipe)) tags.add("no-shaker");
     if (requiredCount >= 6 || minutes >= 8) tags.add("project");
     if (recipe.ingredients.length <= 3) tags.add("three-ingredient");
     return [...tags];
@@ -93,7 +99,7 @@
   }
 
   function buildRecipes(recipeBlueprints) {
-    const recipes = recipeBlueprints.map(([id, name, type, tags, time, strength, image, summary, ingredients, required, method, glass]) => ({
+    const recipes = recipeBlueprints.map(([id, name, type, tags, time, strength, image, summary, ingredients, required, method, glass, about, variations]) => ({
       id,
       name,
       type,
@@ -106,6 +112,8 @@
       required,
       method,
       glass,
+      about: about || "",
+      variations: variations || [],
     }));
     recipes.forEach((recipe) => {
       recipe.flavorTags = recipeFlavorTags(recipe);
@@ -115,7 +123,93 @@
     return recipes;
   }
 
+  // ---- Search and filters -------------------------------------------------
+
+  // "pina colada" should find "Piña Colada": compare without accents or case.
+  function fold(text) {
+    return String(text).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  function recipeMatchesQuery(recipe, query, extraText = "") {
+    const haystack = [recipe.name, recipe.type, recipe.summary, extraText, ...recipe.tags, ...recipe.flavorTags, ...recipe.effortTags, ...recipe.ingredients, ...recipe.required].join(" ");
+    return fold(haystack).includes(fold(String(query || "").trim()));
+  }
+
+  function recipeMatchesFilter(recipe, filter, favoriteIds = new Set()) {
+    if (filter === "all") return true;
+    if (filter === "favorites") return favoriteIds.has(recipe.id);
+    return recipe.tags.includes(filter) || recipe.flavorTags.includes(filter) || recipe.effortTags.includes(filter);
+  }
+
+  // ---- Pantry matcher -----------------------------------------------------
+  // `config` is data/pantry-config.js. Kept free of DOM and storage access so
+  // the same logic runs in the browser and under `npm test`.
+
+  // The shelf plus anything it implies (bourbon also satisfies "whiskey").
+  function expandShelf(selected, equivalents) {
+    const expanded = new Set(selected);
+    for (const ingredient of selected) {
+      (equivalents[ingredient] || []).forEach((equivalent) => expanded.add(equivalent));
+    }
+    return expanded;
+  }
+
+  // How annoying an ingredient is to go and get: 1 (grocery run) to 4 (rare bottle).
+  function ingredientCost(ingredient, config) {
+    if (config.specialtyIngredients.includes(ingredient)) return 4;
+    if (config.pantryStaples.includes(ingredient)) return 2;
+    if (config.easyGrabIngredients.includes(ingredient)) return 1;
+    return 3;
+  }
+
+  function matchRecipe(recipe, available, config) {
+    const missing = recipe.required.filter((ingredient) => !available.has(ingredient));
+    return {
+      ...recipe,
+      missing,
+      shoppingPain: missing.reduce((total, ingredient) => total + ingredientCost(ingredient, config), 0),
+      score: recipe.required.length ? (recipe.required.length - missing.length) / recipe.required.length : 0,
+    };
+  }
+
+  // Recipes you can make now or are within two ingredients of, ranked by how
+  // little shopping they need.
+  function pantryMatches(recipes, selected, config) {
+    const available = expandShelf(selected, config.ingredientEquivalents);
+    return recipes
+      .map((recipe) => matchRecipe(recipe, available, config))
+      .filter((recipe) => recipe.missing.length <= 2)
+      .sort((a, b) => a.missing.length - b.missing.length || a.shoppingPain - b.shoppingPain || b.score - a.score || a.name.localeCompare(b.name));
+  }
+
+  // Single ingredients that would each complete at least one recipe, ranked
+  // by how many they unlock, then by how easy they are to get.
+  function bestNextBuys(matches, selected, config, limit = 3) {
+    const owned = new Set(selected);
+    const unlocks = new Map();
+    matches
+      .filter((recipe) => recipe.missing.length === 1 && !owned.has(recipe.missing[0]))
+      .forEach((recipe) => {
+        const ingredient = recipe.missing[0];
+        if (!unlocks.has(ingredient)) unlocks.set(ingredient, []);
+        unlocks.get(ingredient).push(recipe.name);
+      });
+    return [...unlocks.entries()]
+      .map(([ingredient, names]) => ({ ingredient, names, cost: ingredientCost(ingredient, config) }))
+      .sort((a, b) => b.names.length - a.names.length || a.cost - b.cost || a.ingredient.localeCompare(b.ingredient))
+      .slice(0, limit);
+  }
+
   return {
+    fold,
+    needsShaker,
+    recipeMatchesQuery,
+    recipeMatchesFilter,
+    expandShelf,
+    ingredientCost,
+    matchRecipe,
+    pantryMatches,
+    bestNextBuys,
     escapeHtml,
     amountToNumber,
     formatAmount,

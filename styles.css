@@ -2130,3 +2130,40 @@ li {
     margin-left: auto;
   }
 }
+
+/* Recipe page: background and variations */
+.recipe-notes {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 44px);
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.recipe-notes p,
+.recipe-notes li {
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.recipe-notes p {
+  margin: 0;
+}
+
+.recipe-notes ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.recipe-notes strong {
+  color: var(--ink);
+}
+
+@media (max-width: 760px) {
+  .recipe-notes {
+    grid-template-columns: 1fr;
+  }
+}
